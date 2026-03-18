@@ -75,7 +75,7 @@ dependencies {
     implementation "androidx.biometric:biometric:1.1.0"
 
     // Lottie for animations
-    implementation 'com.airbnb.android:lottie:6.3.0'
+    implementation 'com.airbnb.android:lottie:6.4.0'
 
     // Hilt Dependency Injection
     implementation "com.google.dagger:hilt-android:2.50"
