@@ -99,11 +99,13 @@ Due to the size of AI libraries (`librosa`, `onnxruntime`), we deploy via Docker
     cd backend
     sam build
     ```
-2.  **Initial Deployment:**
+2.  **Initial Deployment (Mumbai Region):**
     ```bash
     sam deploy --guided
     ```
-    *Note: During guided setup, allow SAM to create an ECR repository for your image.*
+    *   **Stack Name:** `jdasense-backend`
+    *   **AWS Region:** `ap-south-1` (Mumbai)
+    *   *Note: During guided setup, allow SAM to create an ECR repository for your image.*
 
 3.  **Infrastructure Components:**
     *   **Lambda:** Runs the FastAPI app and ONNX inference.

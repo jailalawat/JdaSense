@@ -70,6 +70,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
 
+    // Security & Biometrics
+    implementation "androidx.security:security-crypto:1.1.0-alpha06"
+    implementation "androidx.biometric:biometric:1.1.0"
+
     // Lottie for animations
     implementation 'com.airbnb.android:lottie:6.3.0'
 

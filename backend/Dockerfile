@@ -1,14 +1,16 @@
-FROM public.ecr.aws/lambda/python:3.10
+FROM public.ecr.aws/lambda/python:3.12
 
-# Install system dependencies for librosa and compiling C++ wheels (like soxr)
-RUN yum install -y \
+# Install system dependencies for librosa and compiling C++ wheels
+# AL2023 uses 'dnf' instead of 'yum' (though yum works as a link)
+RUN dnf install -y \
     mesa-libGL-devel \
     libsndfile \
     gcc-c++ \
     cmake \
-    make
+    make \
+    git
 
-# Upgrade pip to ensure latest build compatibility
+# Upgrade pip
 RUN pip install --upgrade pip
 
 # Copy requirements and install

@@ -10,6 +10,11 @@ Globals:
       Variables:
         S3_BUCKET: !Ref RecordingsBucket
         DYNAMODB_TABLE: !Ref PredictionsTable
+        USERS_TABLE: !Ref UsersTable
+        AUDIT_TABLE: !Ref AuditTable
+  Api:
+    Auth:
+      ApiKeyRequired: true
 
 Resources:
   JdaSenseApiFunction:
@@ -34,6 +39,10 @@ Resources:
             BucketName: !Ref RecordingsBucket
         - DynamoDBCrudPolicy:
             TableName: !Ref PredictionsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AuditTable
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: .
@@ -56,7 +65,55 @@ Resources:
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: jdasense-users
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  AuditTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: jdasense-audit
+      AttributeDefinitions:
+        - AttributeName: log_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: log_id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  JdaSenseApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    Properties:
+      Enabled: true
+      Name: JdaSenseMobileKey
+
+  JdaSenseUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      ApiStages:
+        - ApiId: !Ref ServerlessRestApi
+          Stage: Prod
+      UsagePlanName: JdaSenseUsagePlan
+
+  JdaSenseUsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+      KeyId: !Ref JdaSenseApiKey
+      KeyType: API_KEY
+      UsagePlanId: !Ref JdaSenseUsagePlan
+
 Outputs:
   ApiUrl:
     Description: "API Gateway endpoint URL for JdaSense"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  ApiKey:
+    Description: "API Key for the mobile app"
+    Value: !Ref JdaSenseApiKey

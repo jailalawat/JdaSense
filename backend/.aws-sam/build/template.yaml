@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: JdaSense Serverless Backend (FastAPI + AI Inference)
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 1024
+    Environment:
+      Variables:
+        S3_BUCKET:
+          Ref: RecordingsBucket
+        DYNAMODB_TABLE:
+          Ref: PredictionsTable
+Resources:
+  JdaSenseApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Architectures:
+      - x86_64
+      Events:
+        ProxyApiRoot:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+      Policies:
+      - S3WritePolicy:
+          BucketName:
+            Ref: RecordingsBucket
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: PredictionsTable
+      ImageUri: jdasenseapifunction:v1
+    Metadata:
+      DockerContext: /Users/jailalawat/projects/JdaSense/backend
+      DockerTag: v1
+      Dockerfile: Dockerfile
+      SamResourceId: JdaSenseApiFunction
+  RecordingsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: jdasense-recordings
+  PredictionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: jdasense-predictions
+      AttributeDefinitions:
+      - AttributeName: record_id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: record_id
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint URL for JdaSense
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/

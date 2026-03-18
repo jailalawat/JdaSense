@@ -8,3 +8,6 @@ librosa
 numpy
 scipy
 pydantic
+pyjwt
+passlib
+bcrypt
