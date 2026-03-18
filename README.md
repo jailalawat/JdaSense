@@ -41,10 +41,17 @@ Build an end-to-end "Data Flywheel" for medical diagnostics:
 *   **Networking:** Retrofit + Multipart upload logic.
 *   **End-to-End Testing:** Mock server with random success/anomaly results and retry logic.
 
-### 🏗️ AI Model & Training Pipeline (In Progress)
-*   **Milestone 1:** Environment and Data Acquisition.
-*   **Milestone 2:** Preprocessing & Spectrogram Generation.
-*   **Milestone 3:** Model Training & ONNX Export.
+### ✅ Serverless Backend Deployment (Complete)
+*   **API Framework:** FastAPI with Mangum for AWS Lambda compatibility.
+*   **AI Inference:** ONNX Runtime integrated for high-speed cloud diagnostics.
+*   **Infrastructure:** AWS SAM template for automated deployment (Lambda, S3, DynamoDB).
+*   **Data Flywheel:** Automatic S3 capture and DynamoDB logging of all predictions.
+
+### ✅ AI Model & Training Pipeline (Complete)
+*   **Preprocessing:** Butterworth Band-pass filtering and Mel-Spectrogram generation.
+*   **Model:** ResNet18 backbone with weighted cross-entropy for anomaly detection.
+*   **Automation:** End-to-end retraining script and ONNX export.
+*   **Flywheel Logic:** Automated S3 ingestion and Label Studio integration.
 
 ---
 

@@ -1,0 +1,10 @@
+fastapi
+mangum
+uvicorn
+python-multipart
+boto3
+onnxruntime
+librosa
+numpy
+scipy
+pydantic

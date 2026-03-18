@@ -26,7 +26,7 @@ The architecture consists of three main pillars:
   * PhysioNet CirCor DigiScope (5,000+ recordings, Murmur detection).
   * PhysioNet CinC 2016 (Noisy, real-world data).
 
-### 3. Serverless Backend (AWS or Google Cloud)
+### 3. Serverless Backend (AWS)
 * **API/Compute:** AWS Lambda (Python) with API Gateway OR Google Cloud Run. (Serverless means you only pay when someone uses the app).
 * **Web Framework:** FastAPI (wrapped in `Mangum` for AWS Lambda compatibility).
 * **Storage (The Data Flywheel):** Amazon S3 (to store the uploaded `.wav` files for future training).
