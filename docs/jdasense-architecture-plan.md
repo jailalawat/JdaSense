@@ -79,13 +79,12 @@ The JdaSense architecture is fully implemented, deployed, and verified.
 
 While all the code is written and deployed, there are three operational tasks remaining to reach "Production Grade":
 
-1. **Real Model Training:**
-    * Currently, the system uses a placeholder model in `backend/model/`.
-    * **Action:** Run `python ai/download_data.py` followed by `python ai/automate_retrain.py` to generate the real `heart_sound_model.onnx`, then redeploy the backend.
+1. **Real Model Training:** ✅
+    *   **Action:** Preprocessed sample data and trained ResNet18. `heart_sound_model.onnx` generated and moved to `backend/model/`. Ready for redeploy.
 
 2. **Label Studio Setup:**
     * The `flywheel_ingest.py` is ready to process labels, but you still need to host a **Label Studio** instance (e.g., on a small EC2 or locally) to perform the actual expert human review of recordings.
 
-3. **End-to-End Production Test:**
-    * **Action:** Perform a final live test: Record a real heart sound on the device -> Verify it reaches the AWS Lambda -> Verify the `.wav` appears in S3 -> Verify the audit log appears in DynamoDB.
+3. **End-to-End Production Test:** 🏗️ (Script Ready)
+    *   **Action:** `backend/tests/production_test.py` created. Run this after redeploying with real credentials to verify API, S3, and DynamoDB.
 

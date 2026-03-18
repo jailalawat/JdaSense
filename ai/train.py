@@ -11,7 +11,7 @@ from tqdm import tqdm
 # Constants
 BATCH_SIZE = 32
 LEARNING_RATE = 1e-4
-EPOCHS = 20
+EPOCHS = 2
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class HeartSoundDataset(Dataset):
@@ -104,18 +104,36 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, epochs):
 
 def main():
     processed_dir = 'ai/data/processed'
+    raw_dir = 'ai/data/raw/circor-heart-sound'
     
-    # Mock label logic for setup (In production, parse from .csv labels)
-    # 0 = Normal, 1 = Abnormal
+    # Try to load real labels from CirCor CSV
+    label_map = {}
+    csv_path = os.path.join(raw_dir, 'training_data.csv')
+    if os.path.exists(csv_path):
+        import pandas as pd
+        df = pd.read_csv(csv_path)
+        # 0 = Normal, 1 = Abnormal (Murmur)
+        for _, row in df.iterrows():
+            patient_id = str(row['Patient ID'])
+            label = 0 if row['Murmur'] == 'Absent' else 1
+            label_map[patient_id] = label
+    
     file_paths = []
     labels = []
     
     for f in os.listdir(processed_dir):
         if f.endswith('.npy'):
             path = os.path.join(processed_dir, f)
-            file_paths.append(path)
-            # Placeholder: Assign random labels if actual labels not parsed yet
-            labels.append(np.random.randint(0, 2))
+            # Extract Patient ID from filename (e.g., 2530_AV_seg0.npy -> 2530)
+            patient_id = f.split('_')[0]
+            
+            if patient_id in label_map:
+                file_paths.append(path)
+                labels.append(label_map[patient_id])
+            else:
+                # Fallback to random for demonstration if no CSV
+                file_paths.append(path)
+                labels.append(np.random.randint(0, 2))
             
     if not file_paths:
         print("No processed data found. Run preprocess.py first.")
