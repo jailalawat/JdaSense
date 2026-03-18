@@ -17,8 +17,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://your-serverless-api-url.com/"
-    private const val USE_MOCK = true
+    private const val BASE_URL = "https://v0vo91g9da.execute-api.ap-south-1.amazonaws.com/Prod/"
+    private const val USE_MOCK = false
 
     @Provides
     @Singleton

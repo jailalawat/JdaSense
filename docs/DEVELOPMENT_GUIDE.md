@@ -92,26 +92,50 @@ uvicorn app.main:app --reload
 ```
 
 ### Production Deployment (Containerized)
-Due to the size of AI libraries (`librosa`, `onnxruntime`), we deploy via Docker.
+Due to the size of AI libraries (`librosa`, `onnxruntime`), we deploy via Docker to handle up to 10GB of dependencies.
 
-1.  **Build the Container:**
+#### 🚀 First-Time Deployment
+Run this command from the `backend/` folder. It automatically creates the necessary S3 buckets and ECR repositories:
+```bash
+cd backend
+sam build
+sam deploy \
+    --stack-name jdasense-backend \
+    --resolve-s3 \
+    --resolve-image-repos \
+    --region ap-south-1 \
+    --capabilities CAPABILITY_IAM \
+    --confirm-changeset
+```
+
+#### 🔄 Updating the Backend (Next Time)
+Whenever you change the code (`main.py`) or the AI model (`.onnx`), follow these three steps:
+
+1.  **Build:**
     ```bash
-    cd backend
     sam build
     ```
-2.  **Initial Deployment (Mumbai Region):**
+2.  **Deploy:**
     ```bash
-    sam deploy --guided
+    sam deploy
     ```
-    *   **Stack Name:** `jdasense-backend`
-    *   **AWS Region:** `ap-south-1` (Mumbai)
-    *   *Note: During guided setup, allow SAM to create an ECR repository for your image.*
+    *(Because you used the flags in the first deployment, SAM remembers the settings. It will build a new Docker image, push it to ECR, and update the Lambda function automatically.)*
 
-3.  **Infrastructure Components:**
-    *   **Lambda:** Runs the FastAPI app and ONNX inference.
-    *   **API Gateway:** Exposes the `/predict` endpoint.
-    *   **S3 (`jdasense-recordings`):** Stores all uploaded audio for future training.
-    *   **DynamoDB (`jdasense-predictions`):** Logs prediction results and confidence.
+3.  **Sync (Fast Testing):**
+    For quick code changes without full re-deployment, you can use:
+    ```bash
+    sam sync --stack-name jdasense-backend --watch
+    ```
+
+---
+
+### Infrastructure Components:
+*   **Lambda:** Docker-based FastAPI app + ONNX inference.
+*   **API Gateway:** Secure HTTPS endpoint requiring `x-api-key`.
+*   **ECR:** Managed repository for your backend Docker images.
+*   **S3 (`jdasense-recordings`):** Audio storage for the Data Flywheel.
+*   **DynamoDB:** User registry, Audit logs, and Prediction history.
+
 
 ---
 
