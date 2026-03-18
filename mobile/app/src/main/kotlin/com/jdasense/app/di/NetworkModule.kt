@@ -1,6 +1,7 @@
 package com.jdasense.app.di
 
 import com.jdasense.app.network.ApiService
+import com.jdasense.app.network.MockInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +16,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://your-serverless-api-url.com/" // Replace with real URL
+    private const val BASE_URL = "https://your-serverless-api-url.com/"
+    private const val USE_MOCK = true
 
     @Provides
     @Singleton
@@ -28,9 +30,14 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .build()
+        
+        if (USE_MOCK) {
+            builder.addInterceptor(MockInterceptor())
+        }
+        
+        return builder.build()
     }
 
     @Provides
