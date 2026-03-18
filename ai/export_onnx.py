@@ -40,6 +40,13 @@ def export_to_onnx(model_path, onnx_path):
         dynamic_axes={'input': {0: 'batch_size'}, 'output': {0: 'batch_size'}}
     )
     
+    # Reload and save specifically without external data
+    # (Sometimes torch.onnx.export creates external data if not careful)
+    onnx_model = onnx.load(onnx_path)
+    from onnx.external_data_helper import convert_model_to_external_data
+    # We want the OPPOSITE of external data
+    onnx.save_model(onnx_model, onnx_path, save_as_external_data=False)
+    
     print(f"Model exported to {onnx_path}")
 
     # 4. Verify ONNX model

@@ -4,10 +4,17 @@ from mangum import Mangum
 import boto3
 import uuid
 import os
+
+# Set Numba cache dir to /tmp for Lambda compatibility
+os.environ['NUMBA_CACHE_DIR'] = '/tmp'
+
 import onnxruntime
 import numpy as np
 import librosa
 import scipy.signal as signal
+import soundfile as sf
+import io
+import scipy.io.wavfile as wavfile
 from pydantic import BaseModel
 from datetime import datetime
 from typing import List, Optional
@@ -25,9 +32,15 @@ handler = Mangum(app)
 # --- Configuration & Constants ---
 S3_BUCKET = os.getenv("S3_BUCKET", "jdasense-recordings")
 DYNAMODB_TABLE = os.getenv("DYNAMODB_TABLE", "jdasense-predictions")
-MODEL_PATH = "model/heart_sound_model.onnx"
+MODEL_PATH = "/var/task/model/heart_sound_model.onnx"
 s3 = boto3.client("s3")
 predictions_table = dynamodb.Table(DYNAMODB_TABLE)
+
+# Debug: List model files on start
+try:
+    print(f"DEBUG: Model directory contents: {os.listdir('/var/task/model')}")
+except Exception as e:
+    print(f"DEBUG: Could not list model directory: {e}")
 
 SAMPLE_RATE = 8000
 N_MELS = 128
@@ -180,9 +193,32 @@ def apply_bandpass_filter(data, lowcut=25, highcut=400, fs=8000, order=5):
     return signal.lfilter(b, a, data)
 
 def preprocess_audio(file_content):
-    with open("/tmp/temp.wav", "wb") as f:
-        f.write(file_content)
-    y, sr = librosa.load("/tmp/temp.wav", sr=SAMPLE_RATE)
+    # Try soundfile first, fallback to scipy for standard WAV
+    try:
+        audio_data, sr = sf.read(io.BytesIO(file_content))
+    except Exception as e:
+        print(f"DEBUG: SoundFile failed: {e}. Trying scipy fallback...")
+        try:
+            sr, audio_data = wavfile.read(io.BytesIO(file_content))
+            # scipy read returns raw ints for PCM, need to normalize
+            if audio_data.dtype == np.int16:
+                audio_data = audio_data.astype(np.float32) / 32768.0
+            elif audio_data.dtype == np.uint8:
+                audio_data = (audio_data.astype(np.float32) - 128.0) / 128.0
+        except Exception as e2:
+            raise ValueError(f"Loader Failure. sf: {e}, scipy: {e2}")
+    
+    # If stereo, convert to mono
+    if len(audio_data.shape) > 1:
+        audio_data = np.mean(audio_data, axis=1)
+        
+    # Resample if needed
+    if sr != SAMPLE_RATE:
+        y = librosa.resample(audio_data, orig_sr=sr, target_sr=SAMPLE_RATE)
+    else:
+        y = audio_data
+    
+    # Filter
     y_filtered = apply_bandpass_filter(y, fs=SAMPLE_RATE)
     samples = 5 * SAMPLE_RATE
     y_segment = np.pad(y_filtered, (0, max(0, samples - len(y_filtered))))[:samples]
@@ -199,15 +235,30 @@ async def predict(audio: UploadFile = File(...), current_user: dict = Depends(ge
         raise HTTPException(status_code=400, detail="Only .wav files are supported")
 
     record_id = str(uuid.uuid4())
+    
+    # Read the UploadFile content
+    # FastAPI handles the multipart parsing, but we must ensure it stays bytes
     content = await audio.read()
     
+    # Critical Debug: The header must be 52494646 (RIFF) followed by size, then 57415645 (WAVE)
+    # If you see 'efbfbd', the data was already mangled by API Gateway
+    print(f"DEBUG: Received {len(content)} bytes. First 20 bytes hex: {content[:20].hex()}")
+    
+    if len(content) == 0:
+        raise HTTPException(status_code=400, detail="Empty audio file received")
+
+    # 1. Save to S3 (The Data Flywheel)
     s3_key = f"raw/{record_id}.wav"
     s3.put_object(Bucket=S3_BUCKET, Key=s3_key, Body=content)
 
     if not os.path.exists(MODEL_PATH):
         return {"result": "Mock: Normal", "is_anomaly": False, "confidence": 0.99, "record_id": record_id}
 
-    input_data = preprocess_audio(content)
+    try:
+        input_data = preprocess_audio(content)
+    except Exception as e:
+        print(f"Preprocessing error: {e}")
+        raise HTTPException(status_code=500, detail=f"Audio processing failed: {str(e)}")
     ort_session = onnxruntime.InferenceSession(MODEL_PATH)
     ort_inputs = {ort_session.get_inputs()[0].name: input_data}
     logits = ort_session.run(None, ort_inputs)[0]

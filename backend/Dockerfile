@@ -1,7 +1,6 @@
 FROM public.ecr.aws/lambda/python:3.12
 
 # Install system dependencies for librosa and compiling C++ wheels
-# AL2023 uses 'dnf' instead of 'yum' (though yum works as a link)
 RUN dnf install -y \
     mesa-libGL-devel \
     libsndfile \
@@ -10,19 +9,19 @@ RUN dnf install -y \
     make \
     git
 
+# Set working directory to Lambda task root
+WORKDIR ${LAMBDA_TASK_ROOT}
+
 # Upgrade pip
 RUN pip install --upgrade pip
 
-# Copy requirements and install
+# Copy and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY app/ ${LAMBDA_TASK_ROOT}/app/
+# Copy application code and model
+COPY app/ ./app/
+COPY model/ ./model/
 
-# Create model directory and copy the trained model
-RUN mkdir -p ${LAMBDA_TASK_ROOT}/model
-COPY model/heart_sound_model.onnx* ${LAMBDA_TASK_ROOT}/model/
-
-# Set the handler to the Mangum object in main.py
+# Set the handler to the Mangum object
 CMD ["app.main.handler"]
