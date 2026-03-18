@@ -9,7 +9,7 @@ import javax.inject.Singleton
 @Singleton
 class AuthInterceptor @Inject constructor(private val tokenManager: TokenManager) : Interceptor {
     
-    private val API_KEY = "txtGNosSvT1YVQzdguYjE1TZKvsbK3RW5XhmL1MN" // Replace with key from sam deploy output
+    private val API_KEY = "5rIq9flqZW6lEbwlVv72L9VtDqYvyiDW7qqn0FMv" // Replace with key from sam deploy output
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
