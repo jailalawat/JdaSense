@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="hospital_blue_primary">#005EB8</color> <!-- NHS Blue / Medical Blue -->
+    <color name="hospital_blue_light">#E6F0F9</color>
+    <color name="hospital_grey_dark">#425563</color>
+    <color name="hospital_white">#FFFFFF</color>
+    <color name="hospital_red_alert">#DA291C</color>
+    <color name="hospital_green_safe">#007A33</color>
+    
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

@@ -13,7 +13,10 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-class AudioRecorder(private val outputFile: File) {
+class AudioRecorder(
+    private val outputFile: File,
+    private val onAmplitudeUpdate: (Float) -> Unit = {}
+) {
 
     private var audioRecord: AudioRecord? = null
     private var isRecording = false
@@ -90,6 +93,11 @@ class AudioRecorder(private val outputFile: File) {
                     }
 
                     if (thresholdMet) {
+                        // Provide normalized amplitude to callback
+                        val rms = calculateRMS(data, read)
+                        val normalizedAmplitude = (rms / 10000f).toFloat().coerceIn(0f, 1f) // Scaled for visibility
+                        onAmplitudeUpdate(normalizedAmplitude)
+
                         // Convert ShortArray back to ByteArray for writing
                         val byteBuffer = java.nio.ByteBuffer.allocate(read * 2)
                         byteBuffer.order(java.nio.ByteOrder.LITTLE_ENDIAN)
