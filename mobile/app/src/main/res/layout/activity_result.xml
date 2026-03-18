@@ -74,12 +74,22 @@
         android:layout_marginBottom="32dp" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_retry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Retry Analysis"
+        android:visibility="gone"
+        app:backgroundTint="@color/hospital_blue_primary"
+        app:layout_constraintBottom_toTopOf="@id/btn_back"
+        android:layout_marginBottom="16dp" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="New Recording"
         android:visibility="gone"
-        app:backgroundTint="@color/hospital_blue_primary"
+        app:backgroundTint="@color/hospital_grey_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="32dp" />
 
