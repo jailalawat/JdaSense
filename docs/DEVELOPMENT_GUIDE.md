@@ -17,7 +17,8 @@ This guide covers the setup, development, and production deployment process for 
 ### Development Setup
 1.  **IDE:** Install Android Studio (Iguana or later).
 2.  **SDK:** Ensure Android SDK 34 (Android 14) is installed.
-3.  **Local Testing:**
+3.  **Build Guide:** Refer to the **[Mobile Build Guide](MOBILE_BUILD_GUIDE.md)** for APK generation instructions.
+4.  **Local Testing:**
     *   The app includes a `MockInterceptor` enabled by default.
     *   Toggle `USE_MOCK = true` in `mobile/app/src/main/kotlin/com/jdasense/app/di/NetworkModule.kt` to test without a backend.
 
