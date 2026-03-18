@@ -12,6 +12,11 @@ Build an end-to-end "Data Flywheel" for medical diagnostics:
 
 ---
 
+## 📖 Documentation
+For detailed setup and deployment instructions, refer to the **[Development & Deployment Guide](docs/DEVELOPMENT_GUIDE.md)**.
+
+---
+
 ## 🏛️ Architecture & Tech Stack
 
 ### 1. Mobile Frontend (Android / Kotlin)

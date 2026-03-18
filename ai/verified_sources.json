@@ -1,0 +1,21 @@
+{
+    "sources": [
+        {
+            "name": "circor-heart-sound",
+            "provider": "PhysioNet",
+            "description": "CirCor DigiScope Phonocardiogram Dataset",
+            "type": "wfdb",
+            "last_checked": "2026-03-18",
+            "verified": true
+        },
+        {
+            "name": "challenge-2016",
+            "provider": "PhysioNet",
+            "description": "Classification of Heart Sound Recordings",
+            "type": "wfdb",
+            "last_checked": "2026-03-18",
+            "verified": true
+        }
+    ],
+    "verification_policy": "Only datasets hosted on PhysioNet or official NIH repositories are permitted for automatic ingestion."
+}

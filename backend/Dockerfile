@@ -1,7 +1,15 @@
 FROM public.ecr.aws/lambda/python:3.10
 
-# Install system dependencies for librosa/audio processing
-RUN yum install -y mesa-libGL-devel libsndfile
+# Install system dependencies for librosa and compiling C++ wheels (like soxr)
+RUN yum install -y \
+    mesa-libGL-devel \
+    libsndfile \
+    gcc-c++ \
+    cmake \
+    make
+
+# Upgrade pip to ensure latest build compatibility
+RUN pip install --upgrade pip
 
 # Copy requirements and install
 COPY requirements.txt .
@@ -11,7 +19,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app/ ${LAMBDA_TASK_ROOT}/app/
 
 # Create model directory and copy the trained model
-# Note: Ensure you have your .onnx file in backend/model/
 RUN mkdir -p ${LAMBDA_TASK_ROOT}/model
 COPY model/heart_sound_model.onnx* ${LAMBDA_TASK_ROOT}/model/
 
