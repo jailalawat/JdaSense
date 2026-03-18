@@ -1,0 +1,9 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="@color/hospital_blue_primary"
+        android:pathData="M54,90 L50.15,86.5 C36.5,74.14 27.5,65.99 27.5,56 C27.5,47.9 33.9,41.5 42,41.5 C46.58,41.5 50.97,43.64 54,47.09 C57.03,43.64 61.42,41.5 66,41.5 C74.1,41.5 80.5,47.9 80.5,56 C80.5,65.99 71.5,74.14 57.85,86.5 L54,90 Z" />
+</vector>
