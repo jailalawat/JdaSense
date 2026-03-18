@@ -15,9 +15,9 @@ Resources:
   JdaSenseApiFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: app/
-      Handler: main.handler
-      Runtime: python3.10
+      PackageType: Image
+      Architectures:
+        - x86_64
       Events:
         ProxyApiRoot:
           Type: Api
@@ -34,6 +34,10 @@ Resources:
             BucketName: !Ref RecordingsBucket
         - DynamoDBCrudPolicy:
             TableName: !Ref PredictionsTable
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: .
+      DockerTag: v1
 
   RecordingsBucket:
     Type: AWS::S3::Bucket
