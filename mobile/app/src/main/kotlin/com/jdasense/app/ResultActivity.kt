@@ -59,8 +59,7 @@ class ResultActivity : AppCompatActivity() {
                 val requestFile = file.asRequestBody("audio/wav".toMediaTypeOrNull())
                 val body = MultipartBody.Part.createFormData("audio", file.name, requestFile)
                 
-                // Note: In production, store the API_KEY securely (e.g. encrypted in BuildConfig)
-                val response = apiService.predict("YOUR_API_KEY_HERE", body)
+                val response = apiService.predict(body)
                 
                 if (response.isSuccessful && response.body() != null) {
                     val prediction = response.body()!!

@@ -6,6 +6,20 @@
     android:background="@color/hospital_white"
     android:padding="24dp">
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_manage"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="⚙️ Management"
+        android:textColor="@color/hospital_blue_primary"
+        app:strokeColor="@color/hospital_blue_primary"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp" />
+
     <TextView
         android:id="@+id/tv_instruction"
         android:layout_width="0dp"

@@ -1,6 +1,7 @@
 package com.jdasense.app
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -11,12 +12,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.jdasense.app.audio.AudioRecorder
 import com.jdasense.app.databinding.ActivityMainBinding
+import com.jdasense.app.security.TokenManager
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    @Inject lateinit var tokenManager: TokenManager
     private lateinit var binding: ActivityMainBinding
     private var audioRecorder: AudioRecorder? = null
     private var isRecording = false
@@ -36,11 +40,23 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupRoleBasedUI()
+
         binding.btnRecord.setOnClickListener {
             if (!isRecording) {
                 checkPermissionsAndStart()
             } else {
                 stopRecording()
+            }
+        }
+    }
+
+    private fun setupRoleBasedUI() {
+        val role = tokenManager.getRole()
+        if (role == "SuperAdmin" || role == "HospitalOwner") {
+            binding.btnManage.visibility = View.VISIBLE
+            binding.btnManage.setOnClickListener {
+                startActivity(Intent(this, ManagementActivity::class.java))
             }
         }
     }
@@ -97,6 +113,6 @@ class MainActivity : AppCompatActivity() {
         binding.btnRecord.text = "Start Recording"
         binding.tvTimer.visibility = View.GONE
         
-        startActivity(android.content.Intent(this, ResultActivity::class.java))
+        startActivity(Intent(this, ResultActivity::class.java))
     }
 }

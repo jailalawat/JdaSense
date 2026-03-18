@@ -34,6 +34,18 @@ class TokenManager @Inject constructor(@ApplicationContext context: Context) {
     fun getToken(): String? {
         return sharedPreferences.getString("JWT_TOKEN", null)
     }
+
+    fun getRole(): String? {
+        val token = getToken() ?: return null
+        return try {
+            // Simple Base64 decode of JWT payload
+            val payload = token.split(".")[1]
+            val decoded = android.util.Base64.decode(payload, android.util.Base64.DEFAULT).decodeToString()
+            org.json.JSONObject(decoded).getString("role")
+        } catch (e: Exception) {
+            null
+        }
+    }
     
     fun clearToken() {
         sharedPreferences.edit().remove("JWT_TOKEN").apply()

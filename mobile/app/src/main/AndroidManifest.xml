@@ -41,6 +41,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ManagementActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ResultActivity"
             android:exported="false" />
     </application>

@@ -1,6 +1,7 @@
 package com.jdasense.app.di
 
 import com.jdasense.app.network.ApiService
+import com.jdasense.app.network.AuthInterceptor
 import com.jdasense.app.network.MockInterceptor
 import dagger.Module
 import dagger.Provides
@@ -29,9 +30,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
+    fun provideOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor,
+        authInterceptor: AuthInterceptor
+    ): OkHttpClient {
         val builder = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(authInterceptor)
         
         if (USE_MOCK) {
             builder.addInterceptor(MockInterceptor())
