@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/hospital_white"
+    android:padding="24dp">
+
+    <!-- Analyzing State -->
+    <com.airbnb.android.lottie.LottieAnimationView
+        android:id="@+id/lottie_analyzing"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_url="https://assets10.lottiefiles.com/packages/lf20_m6cuL6.json"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_analyzing_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Analyzing Heart Sounds..."
+        android:textSize="18sp"
+        android:textColor="@color/hospital_blue_primary"
+        app:layout_constraintTop_toBottomOf="@id/lottie_analyzing"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!-- Result State (Hidden by default) -->
+    <TextView
+        android:id="@+id/tv_result_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Result"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="64dp" />
+
+    <TextView
+        android:id="@+id/tv_result_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Normal"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="@color/hospital_green_safe"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tv_result_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/tv_disclaimer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="⚠️ Disclaimer: This is an AI-powered assessment and not a final medical diagnosis. Please consult a qualified healthcare professional for any health concerns."
+        android:textSize="14sp"
+        android:textColor="@color/hospital_grey_dark"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/btn_back"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="32dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_retry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Retry Analysis"
+        android:visibility="gone"
+        app:backgroundTint="@color/hospital_blue_primary"
+        app:layout_constraintBottom_toTopOf="@id/btn_back"
+        android:layout_marginBottom="16dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="New Recording"
+        android:visibility="gone"
+        app:backgroundTint="@color/hospital_grey_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="32dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.airbnb.android.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieAnimationView
 import com.jdasense.app.databinding.ActivityResultBinding
 import com.jdasense.app.network.ApiService
 import dagger.hilt.android.AndroidEntryPoint

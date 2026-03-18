@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "com.jdasense.app-mergeReleaseResources-36:/layout/activity_result.xml",
+        "source": "com.jdasense.app-main-38:/layout/activity_result.xml"
+    },
+    {
+        "merged": "com.jdasense.app-mergeReleaseResources-36:/layout/activity_pin.xml",
+        "source": "com.jdasense.app-main-38:/layout/activity_pin.xml"
+    },
+    {
+        "merged": "com.jdasense.app-mergeReleaseResources-36:/layout/activity_management.xml",
+        "source": "com.jdasense.app-main-38:/layout/activity_management.xml"
+    },
+    {
+        "merged": "com.jdasense.app-mergeReleaseResources-36:/layout/activity_login.xml",
+        "source": "com.jdasense.app-main-38:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.jdasense.app-mergeReleaseResources-36:/layout/activity_main.xml",
+        "source": "com.jdasense.app-main-38:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.jdasense.app-mergeReleaseResources-36:/layout/activity_onboarding.xml",
+        "source": "com.jdasense.app-main-38:/layout/activity_onboarding.xml"
+    }
+]

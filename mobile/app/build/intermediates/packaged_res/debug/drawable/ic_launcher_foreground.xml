@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Background Layer -->
+    <path
+        android:fillColor="@color/hospital_blue_light"
+        android:pathData="M54,54m-48,0a48,48 0,1 1,96 0a48,48 0,1 1,-96 0" />
+    <!-- ECG Pulse Line -->
+    <path
+        android:strokeColor="@color/hospital_blue_primary"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M15,54 L35,54 L40,40 L45,68 L50,54 L55,54 L58,25 L65,85 L72,54 L93,54" />
+    <!-- AI Text Indicator -->
+    <path
+        android:fillColor="@color/hospital_grey_dark"
+        android:pathData="M75,45 L80,35 L85,45 M77,42 L83,42 M88,35 L88,45" />
+</vector>

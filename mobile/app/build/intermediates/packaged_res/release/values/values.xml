@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="hospital_blue_dark">#007C91</color>
+    <color name="hospital_blue_light">#E0F7FA</color>
+    <color name="hospital_blue_primary">#00ACC1</color>
+    <color name="hospital_green_safe">#388E3C</color>
+    <color name="hospital_grey_dark">#263238</color>
+    <color name="hospital_red_alert">#D32F2F</color>
+    <color name="hospital_white">#FFFFFF</color>
+    <string name="app_name">JdaSense</string>
+</resources>

@@ -1,0 +1,38 @@
+[
+    {
+        "merged": "com.jdasense.app-merged_res-37:/layout_activity_main.xml.flat",
+        "source": "com.jdasense.app-main-39:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.jdasense.app-merged_res-37:/drawable_ic_notification.xml.flat",
+        "source": "com.jdasense.app-main-39:/drawable/ic_notification.xml"
+    },
+    {
+        "merged": "com.jdasense.app-merged_res-37:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.jdasense.app-main-39:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.jdasense.app-merged_res-37:/layout_activity_result.xml.flat",
+        "source": "com.jdasense.app-main-39:/layout/activity_result.xml"
+    },
+    {
+        "merged": "com.jdasense.app-merged_res-37:/layout_activity_login.xml.flat",
+        "source": "com.jdasense.app-main-39:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.jdasense.app-merged_res-37:/layout_activity_pin.xml.flat",
+        "source": "com.jdasense.app-main-39:/layout/activity_pin.xml"
+    },
+    {
+        "merged": "com.jdasense.app-merged_res-37:/layout_activity_onboarding.xml.flat",
+        "source": "com.jdasense.app-main-39:/layout/activity_onboarding.xml"
+    },
+    {
+        "merged": "com.jdasense.app-merged_res-37:/drawable_bg_status_badge.xml.flat",
+        "source": "com.jdasense.app-main-39:/drawable/bg_status_badge.xml"
+    },
+    {
+        "merged": "com.jdasense.app-merged_res-37:/layout_activity_management.xml.flat",
+        "source": "com.jdasense.app-main-39:/layout/activity_management.xml"
+    }
+]
