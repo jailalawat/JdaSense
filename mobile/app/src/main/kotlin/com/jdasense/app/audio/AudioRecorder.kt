@@ -27,9 +27,11 @@ class AudioRecorder(
     private var gainControl: AutomaticGainControl? = null
     private var isRecording = false
     
-    // Low-pass filter state for strong noise cancellation
-    private var lastValue = 0f
-    private val alpha = 0.3f // Lower alpha = stronger low-pass filter (smoother signal)
+    // Band-pass filter state for strong noise cancellation (Always On)
+    private var lastLowPassValue = 0f
+    private var lastHighPassValue = 0f
+    private val alphaLowPass = 0.3f  // Suppresses high-frequency noise (>600Hz)
+    private val alphaHighPass = 0.9f // Removes DC offset and low rumble (<20Hz)
     private var recordingJob: Job? = null
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -133,12 +135,19 @@ class AudioRecorder(
                     }
 
                     if (thresholdMet) {
-                        // Strong Software Noise Cancellation (Low-pass Filter)
+                        // Strong Software Noise Cancellation (Band-pass Filter)
                         for (i in 0 until read) {
                             val current = data[i].toFloat()
-                            val filtered = lastValue + alpha * (current - lastValue)
-                            lastValue = filtered
-                            data[i] = filtered.toInt().toShort()
+                            
+                            // High-pass to remove DC/Rumble (<20Hz)
+                            val highPass = alphaHighPass * (lastHighPassValue + current - lastLowPassValue)
+                            lastHighPassValue = highPass
+                            
+                            // Low-pass to isolate heart sounds (<600Hz)
+                            val lowPass = lastLowPassValue + alphaLowPass * (highPass - lastLowPassValue)
+                            lastLowPassValue = lowPass
+                            
+                            data[i] = lowPass.toInt().toShort()
                         }
 
                         // Provide normalized amplitude to callback
