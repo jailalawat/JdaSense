@@ -6,5 +6,8 @@ numpy
 pandas
 matplotlib
 scikit-learn
+scipy
 tqdm
 wfdb
+onnx
+onnxruntime
