@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
+import android.media.audiofx.AcousticEchoCanceler
+import android.media.audiofx.AutomaticGainControl
+import android.media.audiofx.NoiseSuppressor
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +22,14 @@ class AudioRecorder(
 ) {
 
     private var audioRecord: AudioRecord? = null
+    private var noiseSuppressor: NoiseSuppressor? = null
+    private var echoCanceler: AcousticEchoCanceler? = null
+    private var gainControl: AutomaticGainControl? = null
     private var isRecording = false
+    
+    // Low-pass filter state for strong noise cancellation
+    private var lastValue = 0f
+    private val alpha = 0.3f // Lower alpha = stronger low-pass filter (smoother signal)
     private var recordingJob: Job? = null
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -49,6 +59,27 @@ class AudioRecorder(
             return
         }
 
+        // Enable Noise Suppressor if available on the device
+        if (NoiseSuppressor.isAvailable()) {
+            noiseSuppressor = NoiseSuppressor.create(audioRecord!!.audioSessionId)
+            noiseSuppressor?.enabled = true
+            Log.d(TAG, "NoiseSuppressor enabled")
+        }
+
+        // Enable Echo Canceler
+        if (AcousticEchoCanceler.isAvailable()) {
+            echoCanceler = AcousticEchoCanceler.create(audioRecord!!.audioSessionId)
+            echoCanceler?.enabled = true
+            Log.d(TAG, "AcousticEchoCanceler enabled")
+        }
+
+        // Enable Automatic Gain Control
+        if (AutomaticGainControl.isAvailable()) {
+            gainControl = AutomaticGainControl.create(audioRecord!!.audioSessionId)
+            gainControl?.enabled = true
+            Log.d(TAG, "AutomaticGainControl enabled")
+        }
+
         audioRecord?.startRecording()
         isRecording = true
 
@@ -60,6 +91,15 @@ class AudioRecorder(
     fun stop() {
         isRecording = false
         recordingJob?.cancel()
+        
+        noiseSuppressor?.apply { enabled = false; release() }
+        echoCanceler?.apply { enabled = false; release() }
+        gainControl?.apply { enabled = false; release() }
+        
+        noiseSuppressor = null
+        echoCanceler = null
+        gainControl = null
+
         audioRecord?.apply {
             stop()
             release()
@@ -93,6 +133,14 @@ class AudioRecorder(
                     }
 
                     if (thresholdMet) {
+                        // Strong Software Noise Cancellation (Low-pass Filter)
+                        for (i in 0 until read) {
+                            val current = data[i].toFloat()
+                            val filtered = lastValue + alpha * (current - lastValue)
+                            lastValue = filtered
+                            data[i] = filtered.toInt().toShort()
+                        }
+
                         // Provide normalized amplitude to callback
                         val rms = calculateRMS(data, read)
                         val normalizedAmplitude = (rms / 10000f).toFloat().coerceIn(0f, 1f) // Scaled for visibility
