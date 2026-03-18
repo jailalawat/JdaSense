@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.airbnb.android.lottie.LottieAnimationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.airbnb.android.lottie.LottieAnimationView
 import com.jdasense.app.databinding.ActivityResultBinding
 import com.jdasense.app.network.ApiService
 import dagger.hilt.android.AndroidEntryPoint

@@ -3,6 +3,7 @@ package com.jdasense.app.di
 import com.jdasense.app.network.ApiService
 import com.jdasense.app.network.AuthInterceptor
 import com.jdasense.app.network.MockInterceptor
+import com.jdasense.app.network.RetryInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,6 +38,10 @@ object NetworkModule {
         val builder = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .addInterceptor(authInterceptor)
+            .addInterceptor(RetryInterceptor()) // Auto-retry for AWS timeouts
+            .connectTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
+            .writeTimeout(60, java.util.concurrent.TimeUnit.SECONDS)
         
         if (USE_MOCK) {
             builder.addInterceptor(MockInterceptor())
