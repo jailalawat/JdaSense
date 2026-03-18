@@ -3,7 +3,19 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Background Layer -->
     <path
-        android:fillColor="@color/hospital_blue_primary"
-        android:pathData="M54,90 L50.15,86.5 C36.5,74.14 27.5,65.99 27.5,56 C27.5,47.9 33.9,41.5 42,41.5 C46.58,41.5 50.97,43.64 54,47.09 C57.03,43.64 61.42,41.5 66,41.5 C74.1,41.5 80.5,47.9 80.5,56 C80.5,65.99 71.5,74.14 57.85,86.5 L54,90 Z" />
+        android:fillColor="@color/hospital_blue_light"
+        android:pathData="M54,54m-48,0a48,48 0,1 1,96 0a48,48 0,1 1,-96 0" />
+    <!-- ECG Pulse Line -->
+    <path
+        android:strokeColor="@color/hospital_blue_primary"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M15,54 L35,54 L40,40 L45,68 L50,54 L55,54 L58,25 L65,85 L72,54 L93,54" />
+    <!-- AI Text Indicator -->
+    <path
+        android:fillColor="@color/hospital_grey_dark"
+        android:pathData="M75,45 L80,35 L85,45 M77,42 L83,42 M88,35 L88,45" />
 </vector>
