@@ -26,6 +26,7 @@ class AudioRecorder(private val outputFile: File) {
         private const val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
         private const val AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
         private val BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT)
+        private const val NOISE_THRESHOLD = 500 // Threshold for noise gate
     }
 
     @SuppressLint("MissingPermission")
@@ -63,28 +64,59 @@ class AudioRecorder(private val outputFile: File) {
         audioRecord = null
         
         // After stopping, we should wrap the raw PCM into a WAV header
-        writeWavHeader(outputFile)
+        if (outputFile.exists()) {
+            writeWavHeader(outputFile)
+        }
     }
 
     private fun writeAudioDataToFile() {
-        val data = ByteArray(BUFFER_SIZE)
+        val data = ShortArray(BUFFER_SIZE / 2) // Read as shorts for RMS calculation
         val fileOutputStream = FileOutputStream(outputFile)
+        var thresholdMet = false
 
         try {
             // Leave space for WAV header (44 bytes)
             fileOutputStream.write(ByteArray(44))
 
             while (isRecording) {
-                val read = audioRecord?.read(data, 0, BUFFER_SIZE) ?: 0
+                val read = audioRecord?.read(data, 0, data.size) ?: 0
                 if (read > 0) {
-                    fileOutputStream.write(data, 0, read)
+                    if (!thresholdMet) {
+                        val rms = calculateRMS(data, read)
+                        if (rms > NOISE_THRESHOLD) {
+                            thresholdMet = true
+                            Log.d(TAG, "Noise gate threshold met: $rms")
+                        }
+                    }
+
+                    if (thresholdMet) {
+                        // Convert ShortArray back to ByteArray for writing
+                        val byteBuffer = java.nio.ByteBuffer.allocate(read * 2)
+                        byteBuffer.order(java.nio.ByteOrder.LITTLE_ENDIAN)
+                        for (i in 0 until read) {
+                            byteBuffer.putShort(data[i])
+                        }
+                        fileOutputStream.write(byteBuffer.array())
+                    }
                 }
             }
         } catch (e: IOException) {
             Log.e(TAG, "Error writing audio data", e)
         } finally {
             fileOutputStream.close()
+            if (!thresholdMet) {
+                // If threshold was never met, delete the empty/invalid file
+                outputFile.delete()
+            }
         }
+    }
+
+    private fun calculateRMS(data: ShortArray, size: Int): Double {
+        var sum = 0.0
+        for (i in 0 until size) {
+            sum += data[i].toDouble() * data[i].toDouble()
+        }
+        return Math.sqrt(sum / size)
     }
 
     private fun writeWavHeader(file: File) {
