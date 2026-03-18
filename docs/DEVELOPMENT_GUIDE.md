@@ -139,11 +139,63 @@ Whenever you change the code (`main.py`) or the AI model (`.onnx`), follow these
 
 ---
 
-## 🔄 End-to-End Workflow
-1.  **Capture:** User records heart sound on Mobile.
-2.  **Noise Cancellation:** Audio is cleaned in real-time.
-3.  **Upload:** Mobile app POSTs `.wav` to AWS API Gateway.
-4.  **Inference:** Lambda processes audio into a spectrogram and runs ONNX inference.
-5.  **Storage:** Lambda saves `.wav` to S3 and result to DynamoDB.
-6.  **Diagnosis:** Mobile app displays "Normal" or "Anomaly" with a medical disclaimer.
-7.  **Flywheel:** AI Pipeline pulls S3 data to retrain and improve accuracy.
+## 🚀 Production Operations & Verification
+
+### 1. Deployment (AWS ap-south-1)
+To deploy or update the entire stack (Lambda, API Gateway, S3, DynamoDB) in the Mumbai region:
+```bash
+cd backend
+sam build
+sam deploy --stack-name jdasense-backend --resolve-s3 --resolve-image-repos --region ap-south-1 --capabilities CAPABILITY_IAM --confirm-changeset
+```
+
+### 2. Authentication & Admin Access
+**Default Admin Credentials:**
+*   **Email:** `jailalawat@gmail.com`
+*   **Password:** `admin123`
+
+#### Get the API Key Value:
+CloudFormation output shows the Key ID. Use this command to get the actual secret value for headers:
+```bash
+# Replace 't8dot6taql' with the ID from your SAM output
+aws apigateway get-api-key --api-key t8dot6taql --include-value --region ap-south-1 --query "value" --output text
+```
+
+#### Get a JWT Token:
+```bash
+curl -X POST https://v0vo91g9da.execute-api.ap-south-1.amazonaws.com/Prod/auth/login \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -H "x-api-key: <YOUR_API_KEY_VALUE>" \
+     -d "username=jailalawat@gmail.com&password=admin123"
+```
+
+### 3. End-to-End Production Testing
+To verify the live API, S3 capture, and DynamoDB logging:
+1.  **Configure:** Open `backend/tests/production_test.py` and paste your API Key and JWT Token.
+2.  **Run:**
+    ```bash
+    pip install requests boto3 "botocore[crt]"
+    python3 backend/tests/production_test.py
+    ```
+
+### 4. Useful Troubleshooting Commands
+
+#### View Lambda Error Logs:
+```bash
+aws logs describe-log-groups --region ap-south-1 --query "logGroups[?contains(logGroupName,'JdaSenseApiFunction')].logGroupName" --output text | xargs -I {} aws logs tail {} --region ap-south-1
+```
+
+#### Verify Data in S3:
+```bash
+# List all captured recordings
+aws s3 ls s3://jdasense-recordings/raw/ --region ap-south-1
+```
+
+#### Check DynamoDB Logs:
+```bash
+aws dynamodb get-item \
+    --table-name jdasense-predictions \
+    --key '{"record_id": {"S": "<RECORD_ID_FROM_TEST>"}}' \
+    --region ap-south-1
+```
+
