@@ -12,6 +12,8 @@ TRAINING_STATE = Path("ai/last_training_state.json")
 PROCESSED_DIR = Path("ai/data/processed")
 RAW_DIR = Path("ai/data/raw")
 VERIFIED_SOURCES = Path("ai/verified_sources.json")
+SYNC_STATE = Path("ai/data/sync_state.json")
+PREPROCESS_STATE = Path("ai/preprocess_state.json")
 REQUIRED_ARTIFACTS = [
     Path("ai/heart_sound_model.pth"),
     Path("ai/heart_sound_model.onnx"),
@@ -96,18 +98,77 @@ def cleanup_local_training_data():
     else:
         print("Local training data cleanup: nothing to clean.")
 
+
+def clear_directory_contents(target: Path):
+    if not target.exists():
+        return
+    for child in target.iterdir():
+        if child.is_dir():
+            shutil.rmtree(child, ignore_errors=True)
+        else:
+            child.unlink(missing_ok=True)
+
+
+def load_sync_state():
+    if not SYNC_STATE.exists():
+        return {}
+    try:
+        return json.loads(SYNC_STATE.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
 def run_retrain_pipeline():
     """
     Automated pipeline to refresh the model.
     """
     print("🚀 Starting Automated Retraining Pipeline...")
 
-    # 0. Preprocess new and old data
-    print("--- 0. Preprocessing ---")
-    subprocess.run(["python", "ai/preprocess.py"], check=True)
+    cv_folds = int(os.getenv("CV_FOLDS", "0"))
+    target_sensitivity = os.getenv("TARGET_SENSITIVITY")
+    force_retrain = os.getenv("FORCE_RETRAIN", "0").strip().lower() in {"1", "true", "yes"}
+    cleanup_after_success = os.getenv("CLEAN_LOCAL_DATA_AFTER_SUCCESS", "0").strip().lower() in {"1", "true", "yes"}
+    sync_before_train = os.getenv("SYNC_DATA_BEFORE_TRAIN", "1").strip().lower() in {"1", "true", "yes"}
+    force_data_refresh = os.getenv("FORCE_DATA_REFRESH", "0").strip().lower() in {"1", "true", "yes"}
+    train_on_new_data_only = os.getenv("TRAIN_ON_NEW_DATA_ONLY", "0").strip().lower() in {"1", "true", "yes"}
+    reset_processed_before_train = os.getenv("RESET_PROCESSED_BEFORE_TRAIN", "0").strip().lower() in {"1", "true", "yes"}
 
-    # 1. Data quality gate
-    print("--- 1. Data Quality Check ---")
+    if force_data_refresh:
+        print("--- 0. Force Data Refresh ---")
+        clear_directory_contents(RAW_DIR)
+        clear_directory_contents(PROCESSED_DIR)
+        PREPROCESS_STATE.unlink(missing_ok=True)
+        SYNC_STATE.unlink(missing_ok=True)
+        print("Cleared local raw/processed data and preprocess/sync state.")
+
+    # 1. Data sync from verified sources
+    if sync_before_train:
+        print("--- 1. Sync Latest Data ---")
+        subprocess.run(["python", "ai/download_data.py"], check=True)
+
+    sync_state = load_sync_state()
+    any_new_data = bool(sync_state.get("any_new_data", False))
+    sync_started_epoch = sync_state.get("sync_started_at_epoch")
+
+    if train_on_new_data_only and (sync_before_train and not any_new_data) and not force_retrain:
+        print("--- 2. New Data Check ---")
+        print("No new data since last sync; skipping preprocessing/training/export because TRAIN_ON_NEW_DATA_ONLY=1.")
+        return
+
+    if reset_processed_before_train:
+        print("--- 3. Reset Processed Data ---")
+        clear_directory_contents(PROCESSED_DIR)
+        PREPROCESS_STATE.unlink(missing_ok=True)
+        print(f"Cleared {PROCESSED_DIR} before preprocessing.")
+
+    # 4. Preprocess data
+    print("--- 4. Preprocessing ---")
+    preprocess_cmd = ["python", "ai/preprocess.py"]
+    if train_on_new_data_only and sync_started_epoch:
+        preprocess_cmd.extend(["--since-epoch", str(sync_started_epoch)])
+    subprocess.run(preprocess_cmd, check=True)
+
+    # 5. Data quality gate
+    print("--- 5. Data Quality Check ---")
     subprocess.run(["python", "ai/data_quality_report.py"], check=True)
     with open(QUALITY_REPORT, "r") as f:
         quality = json.load(f)
@@ -119,10 +180,6 @@ def run_retrain_pipeline():
         )
     
     train_cmd = ["python", "ai/train.py"]
-    cv_folds = int(os.getenv("CV_FOLDS", "0"))
-    target_sensitivity = os.getenv("TARGET_SENSITIVITY")
-    force_retrain = os.getenv("FORCE_RETRAIN", "0").strip().lower() in {"1", "true", "yes"}
-    cleanup_after_success = os.getenv("CLEAN_LOCAL_DATA_AFTER_SUCCESS", "0").strip().lower() in {"1", "true", "yes"}
     if cv_folds >= 2:
         train_cmd.extend(["--cv-folds", str(cv_folds)])
     if target_sensitivity:
@@ -130,23 +187,23 @@ def run_retrain_pipeline():
 
     current_state = compute_data_fingerprint(cv_folds, target_sensitivity)
     if (not force_retrain) and should_skip_training(current_state):
-        print("--- 2. Training ---")
+        print("--- 6. Training ---")
         print("Data and training settings unchanged. Skipping training and ONNX export.")
     else:
-        # 2. Re-train the model
-        print("--- 2. Training ---")
+        # 6. Re-train the model
+        print("--- 6. Training ---")
         subprocess.run(train_cmd, check=True)
 
-        # 3. Export to ONNX
-        print("--- 3. Exporting to ONNX ---")
+        # 7. Export to ONNX
+        print("--- 7. Exporting to ONNX ---")
         subprocess.run(["python", "ai/export_onnx.py"], check=True)
         save_training_state(current_state)
     
-    # 4. Final Verification
+    # 8. Final Verification
     if os.path.exists("ai/heart_sound_model.onnx"):
         print("✅ Pipeline Success: New model ready for deployment.")
         if cleanup_after_success:
-            print("--- 5. Cleanup Local Training Data ---")
+            print("--- 9. Cleanup Local Training Data ---")
             cleanup_local_training_data()
         # In production, add a shell command here to deploy to AWS Lambda/S3
     else:

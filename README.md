@@ -100,13 +100,25 @@ FORCE_RETRAIN=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
 python ai/check_accuracy.py
 ```
 
+### Data Freshness / New-Only Options
+```bash
+# 1) Force fresh data pull (clear old raw+processed first)
+FORCE_DATA_REFRESH=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+
+# 2) Train only when new synced data exists (skip if no new files)
+TRAIN_ON_NEW_DATA_ONLY=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+
+# 3) Always clear processed/trained segments before preprocessing
+RESET_PROCESSED_BEFORE_TRAIN=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+```
+
 ### Weekly Update Plan (AI + AWS Deploy)
 ```bash
 # 1) Refresh verified datasets
 python ai/download_data.py
 
-# 2) Incremental retrain + export ONNX
-CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+# 2) Incremental retrain + export ONNX (sync + train only on new data)
+TRAIN_ON_NEW_DATA_ONLY=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
 
 # 3) Optional: free local training data after successful run
 CLEAN_LOCAL_DATA_AFTER_SUCCESS=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
