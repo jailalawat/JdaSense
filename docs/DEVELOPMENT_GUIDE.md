@@ -95,6 +95,9 @@ TRAIN_ON_NEW_DATA_ONLY=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_r
 # Clear processed/trained segments before preprocessing
 RESET_PROCESSED_BEFORE_TRAIN=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
 ```
+State model:
+* `ai/training_lock.json` is the canonical lock artifact (portable across fresh clones).
+* `ai/data/sync_state.json` and `ai/preprocess_state.json` are local cache/runtime state.
 
 ### Weekly Update Plan (AI + AWS)
 ```bash

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "generated_at_epoch_seconds": 1773937451,
+  "data_fingerprint": "f49e289d900fcb6866fc809d4761c4c004602cb56907022f97364cfa2cc1e4cc",
+  "processed_file_count": 48648,
+  "processed_total_size_bytes": 3941655552,
+  "processed_latest_mtime": 1773934385,
+  "cv_folds": 5,
+  "target_sensitivity": "0.90",
+  "artifacts": {
+    "heart_sound_model_pth_sha256": "815c52a05927d56df68e8b3e8002bcceba79b5f2484c13ea8ddd66500c0b3c6b",
+    "heart_sound_model_onnx_sha256": "5e27a19edbd4ebe5caca891912772e0e6929d04d4a8dc9337bb3dc3958faa7d6",
+    "training_report_sha256": "255fad249bd454faf38b69810e59f2f397b6698b2fc4d4ce2231629ca963e3b3",
+    "calibration_sha256": "1c9a907b667e32c4b6be9a921c288ac76ebf83d0f2ee6c216ab4f9c1da3b2d30"
+  }
+}

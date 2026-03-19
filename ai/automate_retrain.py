@@ -9,6 +9,7 @@ import shutil
 QUALITY_REPORT = "ai/data_quality_report.json"
 MIN_LABEL_COVERAGE_PERCENT = 80.0
 TRAINING_STATE = Path("ai/last_training_state.json")
+TRAINING_LOCK = Path("ai/training_lock.json")
 PROCESSED_DIR = Path("ai/data/processed")
 RAW_DIR = Path("ai/data/raw")
 VERIFIED_SOURCES = Path("ai/verified_sources.json")
@@ -62,19 +63,62 @@ def artifacts_ready():
 
 
 def should_skip_training(current_state: dict):
-    if not TRAINING_STATE.exists() or not artifacts_ready():
+    if not artifacts_ready():
         return False
-    try:
-        previous = json.loads(TRAINING_STATE.read_text(encoding="utf-8"))
-    except Exception:
-        return False
-    return previous.get("fingerprint") == current_state.get("fingerprint")
+
+    # Prefer canonical pipeline lock if present.
+    if TRAINING_LOCK.exists():
+        try:
+            locked = json.loads(TRAINING_LOCK.read_text(encoding="utf-8"))
+            if locked.get("data_fingerprint") == current_state.get("fingerprint"):
+                return True
+        except Exception:
+            pass
+
+    # Backward-compatible fallback to local runtime state.
+    if TRAINING_STATE.exists():
+        try:
+            previous = json.loads(TRAINING_STATE.read_text(encoding="utf-8"))
+            if previous.get("fingerprint") == current_state.get("fingerprint"):
+                return True
+        except Exception:
+            pass
+    return False
 
 
 def save_training_state(state: dict):
+    def _sha256_file(path: Path):
+        if not path.exists():
+            return None
+        h = hashlib.sha256()
+        with path.open("rb") as f:
+            for chunk in iter(lambda: f.read(1024 * 1024), b""):
+                h.update(chunk)
+        return h.hexdigest()
+
     payload = dict(state)
     payload["updated_at_epoch_seconds"] = int(time.time())
+    payload["artifacts"] = {
+        "heart_sound_model_pth_sha256": _sha256_file(Path("ai/heart_sound_model.pth")),
+        "heart_sound_model_onnx_sha256": _sha256_file(Path("ai/heart_sound_model.onnx")),
+        "training_report_sha256": _sha256_file(Path("ai/training_report.json")),
+        "calibration_sha256": _sha256_file(Path("ai/calibration.json")),
+    }
     TRAINING_STATE.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+    # Portable lock artifact (can be committed/released).
+    lock_payload = {
+        "schema_version": 1,
+        "generated_at_epoch_seconds": payload["updated_at_epoch_seconds"],
+        "data_fingerprint": payload.get("fingerprint"),
+        "processed_file_count": payload.get("processed_file_count"),
+        "processed_total_size_bytes": payload.get("processed_total_size_bytes"),
+        "processed_latest_mtime": payload.get("processed_latest_mtime"),
+        "cv_folds": payload.get("cv_folds"),
+        "target_sensitivity": payload.get("target_sensitivity"),
+        "artifacts": payload.get("artifacts", {}),
+    }
+    TRAINING_LOCK.write_text(json.dumps(lock_payload, indent=2), encoding="utf-8")
 
 
 def cleanup_local_training_data():

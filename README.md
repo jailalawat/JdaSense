@@ -112,6 +112,13 @@ TRAIN_ON_NEW_DATA_ONLY=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_r
 RESET_PROCESSED_BEFORE_TRAIN=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
 ```
 
+### Pipeline State Files
+* `ai/training_lock.json`:
+  Canonical pipeline lock (portable). Tracks trained data fingerprint, settings, and artifact hashes.
+  This file can be committed as the source-of-truth snapshot for fresh clones/environments.
+* `ai/data/sync_state.json` and `ai/preprocess_state.json`:
+  Local runtime cache/state for speed only (ignored by git).
+
 ### Weekly Update Plan (AI + AWS Deploy)
 ```bash
 # 1) Refresh verified datasets
