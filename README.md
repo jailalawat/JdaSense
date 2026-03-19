@@ -28,7 +28,7 @@ For detailed setup and deployment instructions, refer to the **[Development & De
 ### 2. AI Pipeline (PyTorch / Python)
 *   **Framework:** PyTorch (Backbone: ResNet18).
 *   **Preprocessing:** Librosa & SciPy (Butterworth Band-pass Filter, Mel-Spectrogram generation).
-*   **Dataset:** PhysioNet CirCor DigiScope (5,000+ labeled recordings).
+*   **Datasets:** Verified PhysioNet sources managed via `ai/verified_sources.json` (currently CirCor DigiScope + CinC 2016), including per-source `labeling` rules for config-driven integration.
 *   **Deployment:** ONNX Format for high-speed cloud inference.
 
 ### 3. Serverless Backend (AWS / FastAPI)
@@ -78,7 +78,47 @@ For detailed setup and deployment instructions, refer to the **[Development & De
 3.  **AI Pipeline:**
     *   `cd ai`
     *   `pip install -r requirements.txt`
-    *   Run `python download_data.py` to fetch the PhysioNet dataset.
+    *   Run `python download_data.py` to fetch all enabled verified sources.
+    *   Run `python preprocess.py` (incremental; unchanged raw data is auto-skipped).
+    *   Run stronger training with:
+      `python train.py --cv-folds 5 --target-sensitivity 0.90`
+    *   Check latest model metrics quickly:
+      `python check_accuracy.py`
+    *   Retrain automation is incremental: unchanged data/settings will skip re-training on next run.
+    *   Force full retrain when needed:
+      `FORCE_RETRAIN=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py`
+
+### AI Commands (Recommended)
+```bash
+# Normal incremental run (auto-skip when unchanged)
+CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+
+# Force full retrain even if unchanged
+FORCE_RETRAIN=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+
+# Check current model metrics
+python ai/check_accuracy.py
+```
+
+### Weekly Update Plan (AI + AWS Deploy)
+```bash
+# 1) Refresh verified datasets
+python ai/download_data.py
+
+# 2) Incremental retrain + export ONNX
+CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+
+# 3) Optional: free local training data after successful run
+CLEAN_LOCAL_DATA_AFTER_SUCCESS=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+
+# 4) Review latest metrics
+python ai/check_accuracy.py
+
+# 5) Deploy latest backend/model to AWS
+cd backend
+sam build
+sam deploy
+```
 
 ---
 

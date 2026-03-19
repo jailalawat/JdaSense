@@ -46,29 +46,79 @@ This guide covers the setup, development, and production deployment process for 
     ```bash
     python download_data.py
     ```
+    This downloads all enabled verified sources listed in `ai/verified_sources.json`.
 
 ### Training Workflow
 1.  **Preprocessing:** Convert raw `.wav` to Mel-Spectrograms.
     ```bash
     python preprocess.py
     ```
+    This step is incremental and skips processing when raw audio is unchanged (`ai/preprocess_state.json`).
 2.  **Training:** Train the ResNet18 classifier.
     ```bash
     python train.py
     ```
+    For stronger validation and medical-priority tuning:
+    ```bash
+    python train.py --cv-folds 5 --target-sensitivity 0.90
+    ```
+    This writes `ai/cv_report.json` with fold-wise metrics.
 3.  **Export:** Convert the PyTorch model (`.pth`) to ONNX for production.
     ```bash
     python export_onnx.py
     ```
+4.  **Metrics Check:** Print holdout/CV metrics from training artifacts.
+    ```bash
+    python check_accuracy.py
+    ```
+
+### AI Commands (Recommended)
+```bash
+# Normal incremental run (auto-skip when unchanged)
+CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+
+# Force full retrain even if unchanged
+FORCE_RETRAIN=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+
+# Check current model metrics
+python ai/check_accuracy.py
+```
+
+### Weekly Update Plan (AI + AWS)
+```bash
+# 1) Refresh verified datasets
+python ai/download_data.py
+
+# 2) Incremental retrain + ONNX export
+CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+
+# 3) Optional cleanup of local training data after success
+CLEAN_LOCAL_DATA_AFTER_SUCCESS=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+
+# 4) Review accuracy/metrics
+python ai/check_accuracy.py
+
+# 5) Deploy latest model/backend
+cd backend
+sam build
+sam deploy
+```
 
 ### 🔄 Dynamic Data Retraining (Always Fresh AI)
-The system is designed to stay updated with verified open-source datasets (e.g., PhysioNet).
+The system is designed to stay updated with verified open-source datasets (e.g., PhysioNet CirCor + PhysioNet CinC 2016).
 *   **Verified Sources:** Managed in `ai/verified_sources.json`.
+*   **Label Adapters:** Each source defines a `labeling` block in `ai/verified_sources.json` (CSV-based mapping), so new compatible datasets can be added without editing `train.py`.
 *   **Automation:** Run the fetcher to sync new data and auto-trigger retraining:
     ```bash
     python ai/dynamic_data_fetcher.py
     ```
+*   **Incremental Runs:** `automate_retrain.py` now skips training/export when processed data + label config + training settings are unchanged.
+*   **Force Full Run:** Set `FORCE_RETRAIN=1` to bypass skip logic.
+    ```bash
+    FORCE_RETRAIN=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/automate_retrain.py
+    ```
 *   **Verification:** Only datasets marked as `verified: true` are ingested.
+*   **Source Control:** Set `enabled: true/false` per dataset in `ai/verified_sources.json`.
 
 ---
 
@@ -199,4 +249,3 @@ aws dynamodb get-item \
     --key '{"record_id": {"S": "<RECORD_ID_FROM_TEST>"}}' \
     --region ap-south-1
 ```
-
