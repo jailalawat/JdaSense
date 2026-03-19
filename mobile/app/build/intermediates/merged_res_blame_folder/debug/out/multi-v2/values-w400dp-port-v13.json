@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.jdasense.app-mergeDebugResources-35:/values-w400dp-port-v13/values-w400dp-port-v13.xml",
+            "outputFile": "com.jdasense.app-mergeDebugResources-37:/values-w400dp-port-v13/values-w400dp-port-v13.xml",
             "map": [
                 {
                     "source": "/Users/jailalawat/.gradle/caches/transforms-3/4cd9cd3f476a6390046729a362d7a23f/transformed/material-1.11.0/res/values-w400dp-port-v13/values-w400dp-port-v13.xml",

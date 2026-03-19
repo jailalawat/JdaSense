@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.jdasense.app-mergeDebugResources-35:/values-h720dp-v13/values-h720dp-v13.xml",
+            "outputFile": "com.jdasense.app-mergeDebugResources-37:/values-h720dp-v13/values-h720dp-v13.xml",
             "map": [
                 {
                     "source": "/Users/jailalawat/.gradle/caches/transforms-3/6040e51f93553516758f2cbf181939ef/transformed/appcompat-1.6.1/res/values-h720dp-v13/values-h720dp-v13.xml",

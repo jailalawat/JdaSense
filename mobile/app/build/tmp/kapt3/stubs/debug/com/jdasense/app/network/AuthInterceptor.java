@@ -6,7 +6,7 @@ public final class AuthInterceptor implements okhttp3.Interceptor {
     @org.jetbrains.annotations.NotNull()
     private final com.jdasense.app.security.TokenManager tokenManager = null;
     @org.jetbrains.annotations.NotNull()
-    private final java.lang.String API_KEY = "5rIq9flqZW6lEbwlVv72L9VtDqYvyiDW7qqn0FMv";
+    private final java.lang.String API_KEY = "HxuBPWNWqxaZO6MPmwGYB93UnIqhk0W34DWlJcWY";
     
     @javax.inject.Inject()
     public AuthInterceptor(@org.jetbrains.annotations.NotNull()

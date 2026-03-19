@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
-import com.airbnb.android.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
 import com.jdasense.app.R;
 import java.lang.NullPointerException;
@@ -31,6 +31,9 @@ public final class ActivityResultBinding implements ViewBinding {
   public final LottieAnimationView lottieAnalyzing;
 
   @NonNull
+  public final LottieAnimationView lottieAnalyzing1;
+
+  @NonNull
   public final TextView tvAnalyzingStatus;
 
   @NonNull
@@ -44,12 +47,14 @@ public final class ActivityResultBinding implements ViewBinding {
 
   private ActivityResultBinding(@NonNull ConstraintLayout rootView, @NonNull MaterialButton btnBack,
       @NonNull MaterialButton btnRetry, @NonNull LottieAnimationView lottieAnalyzing,
-      @NonNull TextView tvAnalyzingStatus, @NonNull TextView tvDisclaimer,
-      @NonNull TextView tvResultTitle, @NonNull TextView tvResultValue) {
+      @NonNull LottieAnimationView lottieAnalyzing1, @NonNull TextView tvAnalyzingStatus,
+      @NonNull TextView tvDisclaimer, @NonNull TextView tvResultTitle,
+      @NonNull TextView tvResultValue) {
     this.rootView = rootView;
     this.btnBack = btnBack;
     this.btnRetry = btnRetry;
     this.lottieAnalyzing = lottieAnalyzing;
+    this.lottieAnalyzing1 = lottieAnalyzing1;
     this.tvAnalyzingStatus = tvAnalyzingStatus;
     this.tvDisclaimer = tvDisclaimer;
     this.tvResultTitle = tvResultTitle;
@@ -95,9 +100,15 @@ public final class ActivityResultBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.lottie_analyzing;
+      id = R.id.lottieAnalyzing;
       LottieAnimationView lottieAnalyzing = ViewBindings.findChildViewById(rootView, id);
       if (lottieAnalyzing == null) {
+        break missingId;
+      }
+
+      id = R.id.lottie_analyzing;
+      LottieAnimationView lottieAnalyzing1 = ViewBindings.findChildViewById(rootView, id);
+      if (lottieAnalyzing1 == null) {
         break missingId;
       }
 
@@ -126,7 +137,8 @@ public final class ActivityResultBinding implements ViewBinding {
       }
 
       return new ActivityResultBinding((ConstraintLayout) rootView, btnBack, btnRetry,
-          lottieAnalyzing, tvAnalyzingStatus, tvDisclaimer, tvResultTitle, tvResultValue);
+          lottieAnalyzing, lottieAnalyzing1, tvAnalyzingStatus, tvDisclaimer, tvResultTitle,
+          tvResultValue);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

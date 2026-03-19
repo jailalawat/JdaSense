@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.jdasense.app-mergeDebugResources-35:/values-pt/values-pt.xml",
+            "outputFile": "com.jdasense.app-mergeDebugResources-37:/values-pt/values-pt.xml",
             "map": [
                 {
                     "source": "/Users/jailalawat/.gradle/caches/transforms-3/61384d0c757c9337fd03a828e3da592e/transformed/biometric-1.1.0/res/values-pt/values-pt.xml",

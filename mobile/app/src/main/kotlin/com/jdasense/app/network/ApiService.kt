@@ -42,7 +42,7 @@ data class AuditLog(
 
 interface ApiService {
     @Multipart
-    @POST("/predict")
+    @POST("predict")
     suspend fun predict(
         @Part audio: MultipartBody.Part
     ): Response<PredictionResponse>

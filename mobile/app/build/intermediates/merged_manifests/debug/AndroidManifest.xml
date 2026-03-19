@@ -35,7 +35,7 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_launcher_foreground"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+        android:theme="@style/Theme.Material3.DayNight.NoActionBar" >
         <activity
             android:name="com.jdasense.app.SplashActivity"
             android:exported="true" >
@@ -63,6 +63,10 @@
         <activity
             android:name="com.jdasense.app.ResultActivity"
             android:exported="false" />
+        <activity
+            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"
@@ -78,6 +82,10 @@
                 android:name="androidx.profileinstaller.ProfileInstallerInitializer"
                 android:value="androidx.startup" />
         </provider>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <receiver
             android:name="androidx.profileinstaller.ProfileInstallReceiver"

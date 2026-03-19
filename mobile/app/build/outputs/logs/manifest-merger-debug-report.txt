@@ -11,10 +11,13 @@ MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /Users/jailalawat
 MERGED from [androidx.biometric:biometric:1.1.0] /Users/jailalawat/.gradle/caches/transforms-3/61384d0c757c9337fd03a828e3da592e/transformed/biometric-1.1.0/AndroidManifest.xml:17:1-29:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /Users/jailalawat/.gradle/caches/transforms-3/ba17959985608104fa8320ac5c33f6cf/transformed/jetified-appcompat-resources-1.6.1/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.appcompat:appcompat:1.6.1] /Users/jailalawat/.gradle/caches/transforms-3/6040e51f93553516758f2cbf181939ef/transformed/appcompat-1.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.gms:play-services-base:18.4.0] /Users/jailalawat/.gradle/caches/transforms-3/bde64ceba3963286a2f9af3e6a34f329/transformed/jetified-play-services-base-18.4.0/AndroidManifest.xml:16:1-24:12
 MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] /Users/jailalawat/.gradle/caches/transforms-3/e9ea9d930a97b82e95aefa7d382a1249/transformed/jetified-emoji2-views-helper-1.2.0/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/jailalawat/.gradle/caches/transforms-3/709575ab579b68fba5573830b2a04548/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:17:1-35:12
 MERGED from [com.google.dagger:hilt-android:2.50] /Users/jailalawat/.gradle/caches/transforms-3/35c73d7d70523e77c0e15d2770b8ded7/transformed/jetified-hilt-android-2.50/AndroidManifest.xml:16:1-19:12
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/jailalawat/.gradle/caches/transforms-3/113e8987602fce5116c342e6f5551a01/transformed/jetified-viewpager2-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-tasks:18.1.0] /Users/jailalawat/.gradle/caches/transforms-3/dc5cbc0e6ee2346f56f5d8a8399e05b6/transformed/jetified-play-services-tasks-18.1.0/AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-basement:18.3.0] /Users/jailalawat/.gradle/caches/transforms-3/93d4ccedc63c979501fdf7de1413737f/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:16:1-26:12
 MERGED from [androidx.fragment:fragment:1.5.1] /Users/jailalawat/.gradle/caches/transforms-3/ea00ef669b93bf5f01c2e90f80a36321/transformed/fragment-1.5.1/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.activity:activity:1.8.0] /Users/jailalawat/.gradle/caches/transforms-3/77e127f153fed38065fb784becfe0a4c/transformed/jetified-activity-1.8.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] /Users/jailalawat/.gradle/caches/transforms-3/7f4aea4f0f033fe8e32544026e6a33dc/transformed/drawerlayout-1.1.1/AndroidManifest.xml:17:1-24:12
@@ -91,8 +94,14 @@ MERGED from [com.google.android.material:material:1.11.0] /Users/jailalawat/.gra
 MERGED from [com.google.android.material:material:1.11.0] /Users/jailalawat/.gradle/caches/transforms-3/4cd9cd3f476a6390046729a362d7a23f/transformed/material-1.11.0/AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /Users/jailalawat/.gradle/caches/transforms-3/2902a8e0ef17c36b5c6ffdd5299d9586/transformed/constraintlayout-2.1.4/AndroidManifest.xml:9:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /Users/jailalawat/.gradle/caches/transforms-3/2902a8e0ef17c36b5c6ffdd5299d9586/transformed/constraintlayout-2.1.4/AndroidManifest.xml:9:5-20
+MERGED from [com.google.android.gms:play-services-base:18.4.0] /Users/jailalawat/.gradle/caches/transforms-3/bde64ceba3963286a2f9af3e6a34f329/transformed/jetified-play-services-base-18.4.0/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-base:18.4.0] /Users/jailalawat/.gradle/caches/transforms-3/bde64ceba3963286a2f9af3e6a34f329/transformed/jetified-play-services-base-18.4.0/AndroidManifest.xml:19:5-23:19
 MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/jailalawat/.gradle/caches/transforms-3/709575ab579b68fba5573830b2a04548/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/jailalawat/.gradle/caches/transforms-3/709575ab579b68fba5573830b2a04548/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:23:5-33:19
+MERGED from [com.google.android.gms:play-services-tasks:18.1.0] /Users/jailalawat/.gradle/caches/transforms-3/dc5cbc0e6ee2346f56f5d8a8399e05b6/transformed/jetified-play-services-tasks-18.1.0/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-tasks:18.1.0] /Users/jailalawat/.gradle/caches/transforms-3/dc5cbc0e6ee2346f56f5d8a8399e05b6/transformed/jetified-play-services-tasks-18.1.0/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-basement:18.3.0] /Users/jailalawat/.gradle/caches/transforms-3/93d4ccedc63c979501fdf7de1413737f/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:20:5-24:19
+MERGED from [com.google.android.gms:play-services-basement:18.3.0] /Users/jailalawat/.gradle/caches/transforms-3/93d4ccedc63c979501fdf7de1413737f/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:20:5-24:19
 MERGED from [androidx.core:core:1.12.0] /Users/jailalawat/.gradle/caches/transforms-3/63cb74d829a0d401a8d9b177c95ec826/transformed/core-1.12.0/AndroidManifest.xml:28:5-89
 MERGED from [androidx.core:core:1.12.0] /Users/jailalawat/.gradle/caches/transforms-3/63cb74d829a0d401a8d9b177c95ec826/transformed/core-1.12.0/AndroidManifest.xml:28:5-89
 MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jailalawat/.gradle/caches/transforms-3/47e8a82f84dc2066d6123d1e64c6da51/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
@@ -118,7 +127,7 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/jailalawat/.gradle/c
 	android:allowBackup
 		ADDED from /Users/jailalawat/projects/JdaSense/mobile/app/src/main/AndroidManifest.xml:11:9-35
 	android:theme
-		ADDED from /Users/jailalawat/projects/JdaSense/mobile/app/src/main/AndroidManifest.xml:16:9-65
+		ADDED from /Users/jailalawat/projects/JdaSense/mobile/app/src/main/AndroidManifest.xml:16:9-68
 	android:name
 		ADDED from /Users/jailalawat/projects/JdaSense/mobile/app/src/main/AndroidManifest.xml:10:9-36
 activity#com.jdasense.app.SplashActivity
@@ -191,6 +200,8 @@ MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /Users/jailalawat/.gr
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /Users/jailalawat/.gradle/caches/transforms-3/ba17959985608104fa8320ac5c33f6cf/transformed/jetified-appcompat-resources-1.6.1/AndroidManifest.xml:20:5-44
 MERGED from [androidx.appcompat:appcompat:1.6.1] /Users/jailalawat/.gradle/caches/transforms-3/6040e51f93553516758f2cbf181939ef/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
 MERGED from [androidx.appcompat:appcompat:1.6.1] /Users/jailalawat/.gradle/caches/transforms-3/6040e51f93553516758f2cbf181939ef/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-base:18.4.0] /Users/jailalawat/.gradle/caches/transforms-3/bde64ceba3963286a2f9af3e6a34f329/transformed/jetified-play-services-base-18.4.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-base:18.4.0] /Users/jailalawat/.gradle/caches/transforms-3/bde64ceba3963286a2f9af3e6a34f329/transformed/jetified-play-services-base-18.4.0/AndroidManifest.xml:18:5-43
 MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] /Users/jailalawat/.gradle/caches/transforms-3/e9ea9d930a97b82e95aefa7d382a1249/transformed/jetified-emoji2-views-helper-1.2.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] /Users/jailalawat/.gradle/caches/transforms-3/e9ea9d930a97b82e95aefa7d382a1249/transformed/jetified-emoji2-views-helper-1.2.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/jailalawat/.gradle/caches/transforms-3/709575ab579b68fba5573830b2a04548/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:21:5-44
@@ -199,6 +210,10 @@ MERGED from [com.google.dagger:hilt-android:2.50] /Users/jailalawat/.gradle/cach
 MERGED from [com.google.dagger:hilt-android:2.50] /Users/jailalawat/.gradle/caches/transforms-3/35c73d7d70523e77c0e15d2770b8ded7/transformed/jetified-hilt-android-2.50/AndroidManifest.xml:18:3-42
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/jailalawat/.gradle/caches/transforms-3/113e8987602fce5116c342e6f5551a01/transformed/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/jailalawat/.gradle/caches/transforms-3/113e8987602fce5116c342e6f5551a01/transformed/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.gms:play-services-tasks:18.1.0] /Users/jailalawat/.gradle/caches/transforms-3/dc5cbc0e6ee2346f56f5d8a8399e05b6/transformed/jetified-play-services-tasks-18.1.0/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-tasks:18.1.0] /Users/jailalawat/.gradle/caches/transforms-3/dc5cbc0e6ee2346f56f5d8a8399e05b6/transformed/jetified-play-services-tasks-18.1.0/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.3.0] /Users/jailalawat/.gradle/caches/transforms-3/93d4ccedc63c979501fdf7de1413737f/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.3.0] /Users/jailalawat/.gradle/caches/transforms-3/93d4ccedc63c979501fdf7de1413737f/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:18:5-43
 MERGED from [androidx.fragment:fragment:1.5.1] /Users/jailalawat/.gradle/caches/transforms-3/ea00ef669b93bf5f01c2e90f80a36321/transformed/fragment-1.5.1/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.fragment:fragment:1.5.1] /Users/jailalawat/.gradle/caches/transforms-3/ea00ef669b93bf5f01c2e90f80a36321/transformed/fragment-1.5.1/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.activity:activity:1.8.0] /Users/jailalawat/.gradle/caches/transforms-3/77e127f153fed38065fb784becfe0a4c/transformed/jetified-activity-1.8.0/AndroidManifest.xml:20:5-44
@@ -289,6 +304,14 @@ uses-permission#android.permission.USE_FINGERPRINT
 ADDED from [androidx.biometric:biometric:1.1.0] /Users/jailalawat/.gradle/caches/transforms-3/61384d0c757c9337fd03a828e3da592e/transformed/biometric-1.1.0/AndroidManifest.xml:27:5-74
 	android:name
 		ADDED from [androidx.biometric:biometric:1.1.0] /Users/jailalawat/.gradle/caches/transforms-3/61384d0c757c9337fd03a828e3da592e/transformed/biometric-1.1.0/AndroidManifest.xml:27:22-71
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:18.4.0] /Users/jailalawat/.gradle/caches/transforms-3/bde64ceba3963286a2f9af3e6a34f329/transformed/jetified-play-services-base-18.4.0/AndroidManifest.xml:20:9-22:45
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:18.4.0] /Users/jailalawat/.gradle/caches/transforms-3/bde64ceba3963286a2f9af3e6a34f329/transformed/jetified-play-services-base-18.4.0/AndroidManifest.xml:22:19-43
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:18.4.0] /Users/jailalawat/.gradle/caches/transforms-3/bde64ceba3963286a2f9af3e6a34f329/transformed/jetified-play-services-base-18.4.0/AndroidManifest.xml:21:19-78
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:18.4.0] /Users/jailalawat/.gradle/caches/transforms-3/bde64ceba3963286a2f9af3e6a34f329/transformed/jetified-play-services-base-18.4.0/AndroidManifest.xml:20:19-85
 provider#androidx.startup.InitializationProvider
 ADDED from [androidx.emoji2:emoji2:1.2.0] /Users/jailalawat/.gradle/caches/transforms-3/709575ab579b68fba5573830b2a04548/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
 MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jailalawat/.gradle/caches/transforms-3/47e8a82f84dc2066d6123d1e64c6da51/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
@@ -311,6 +334,12 @@ ADDED from [androidx.emoji2:emoji2:1.2.0] /Users/jailalawat/.gradle/caches/trans
 		ADDED from [androidx.emoji2:emoji2:1.2.0] /Users/jailalawat/.gradle/caches/transforms-3/709575ab579b68fba5573830b2a04548/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:31:17-49
 	android:name
 		ADDED from [androidx.emoji2:emoji2:1.2.0] /Users/jailalawat/.gradle/caches/transforms-3/709575ab579b68fba5573830b2a04548/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:30:17-75
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:18.3.0] /Users/jailalawat/.gradle/caches/transforms-3/93d4ccedc63c979501fdf7de1413737f/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:21:9-23:69
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:18.3.0] /Users/jailalawat/.gradle/caches/transforms-3/93d4ccedc63c979501fdf7de1413737f/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:23:13-66
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:18.3.0] /Users/jailalawat/.gradle/caches/transforms-3/93d4ccedc63c979501fdf7de1413737f/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:22:13-58
 permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.12.0] /Users/jailalawat/.gradle/caches/transforms-3/63cb74d829a0d401a8d9b177c95ec826/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
 	android:protectionLevel

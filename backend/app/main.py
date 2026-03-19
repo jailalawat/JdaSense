@@ -193,13 +193,16 @@ def apply_bandpass_filter(data, lowcut=25, highcut=400, fs=8000, order=5):
     return signal.lfilter(b, a, data)
 
 def preprocess_audio(file_content):
+    print("DEBUG: Preprocessing audio...")
     # Try soundfile first, fallback to scipy for standard WAV
     try:
         audio_data, sr = sf.read(io.BytesIO(file_content))
+        print(f"DEBUG: Loaded with soundfile. SR={sr}, Shape={audio_data.shape}")
     except Exception as e:
         print(f"DEBUG: SoundFile failed: {e}. Trying scipy fallback...")
         try:
             sr, audio_data = wavfile.read(io.BytesIO(file_content))
+            print(f"DEBUG: Loaded with scipy. SR={sr}, Shape={audio_data.shape}")
             # scipy read returns raw ints for PCM, need to normalize
             if audio_data.dtype == np.int16:
                 audio_data = audio_data.astype(np.float32) / 32768.0
@@ -210,23 +213,30 @@ def preprocess_audio(file_content):
     
     # If stereo, convert to mono
     if len(audio_data.shape) > 1:
+        print("DEBUG: Converting stereo to mono")
         audio_data = np.mean(audio_data, axis=1)
         
     # Resample if needed
     if sr != SAMPLE_RATE:
+        print(f"DEBUG: Resampling from {sr} to {SAMPLE_RATE}")
         y = librosa.resample(audio_data, orig_sr=sr, target_sr=SAMPLE_RATE)
     else:
         y = audio_data
     
     # Filter
+    print("DEBUG: Applying band-pass filter")
     y_filtered = apply_bandpass_filter(y, fs=SAMPLE_RATE)
     samples = 5 * SAMPLE_RATE
     y_segment = np.pad(y_filtered, (0, max(0, samples - len(y_filtered))))[:samples]
+    
+    # Spectrogram
+    print("DEBUG: Generating Mel-Spectrogram")
     spec = librosa.feature.melspectrogram(
         y=y_segment, sr=SAMPLE_RATE, n_mels=N_MELS, hop_length=HOP_LENGTH, fmin=FMIN, fmax=FMAX
     )
     spec_dB = librosa.power_to_db(spec, ref=np.max)
     spec_norm = (spec_dB - np.mean(spec_dB)) / (np.std(spec_dB) + 1e-6)
+    print("DEBUG: Preprocessing complete")
     return spec_norm[np.newaxis, np.newaxis, ...].repeat(3, axis=1).astype(np.float32)
 
 @app.post("/predict", response_model=PredictionResponse)

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.jdasense.app-mergeDebugResources-35:/values-en-rCA/values-en-rCA.xml",
+            "outputFile": "com.jdasense.app-mergeDebugResources-37:/values-en-rCA/values-en-rCA.xml",
             "map": [
                 {
                     "source": "/Users/jailalawat/.gradle/caches/transforms-3/61384d0c757c9337fd03a828e3da592e/transformed/biometric-1.1.0/res/values-en-rCA/values-en-rCA.xml",

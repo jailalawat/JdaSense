@@ -92,31 +92,7 @@ Resources:
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
-  JdaSenseApiKey:
-    Type: AWS::ApiGateway::ApiKey
-    Properties:
-      Enabled: true
-      # Name removed to allow AWS to generate a unique ID
-
-  JdaSenseUsagePlan:
-    Type: AWS::ApiGateway::UsagePlan
-    Properties:
-      ApiStages:
-        - ApiId: !Ref ServerlessRestApi
-          Stage: Prod
-      UsagePlanName: JdaSenseUsagePlan
-
-  JdaSenseUsagePlanKey:
-    Type: AWS::ApiGateway::UsagePlanKey
-    Properties:
-      KeyId: !Ref JdaSenseApiKey
-      KeyType: API_KEY
-      UsagePlanId: !Ref JdaSenseUsagePlan
-
 Outputs:
   ApiUrl:
     Description: "API Gateway endpoint URL for JdaSense"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
-  ApiKey:
-    Description: "API Key for the mobile app"
-    Value: !Ref JdaSenseApiKey

@@ -10,7 +10,6 @@ import com.airbnb.lottie.LottieAnimationView
 import com.jdasense.app.databinding.ActivityResultBinding
 import com.jdasense.app.network.ApiService
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody

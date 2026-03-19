@@ -1,0 +1,126 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: JdaSense Serverless Backend (FastAPI + AI Inference)
+Globals:
+  Function:
+    Timeout: 120
+    MemorySize: 2048
+    Environment:
+      Variables:
+        S3_BUCKET:
+          Ref: RecordingsBucket
+        DYNAMODB_TABLE:
+          Ref: PredictionsTable
+        USERS_TABLE:
+          Ref: UsersTable
+        AUDIT_TABLE:
+          Ref: AuditTable
+        NUMBA_CACHE_DIR: /tmp
+  Api:
+    Auth:
+      ApiKeyRequired: true
+    BinaryMediaTypes:
+    - '*~1*'
+Resources:
+  JdaSenseApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Architectures:
+      - x86_64
+      Events:
+        ProxyApiRoot:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+      Policies:
+      - S3WritePolicy:
+          BucketName:
+            Ref: RecordingsBucket
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: PredictionsTable
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UsersTable
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: AuditTable
+      ImageUri: jdasenseapifunction:v1
+    Metadata:
+      DockerContext: /Users/jailalawat/projects/JdaSense/backend
+      DockerTag: v1
+      Dockerfile: Dockerfile
+      SamResourceId: JdaSenseApiFunction
+  RecordingsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: jdasense-recordings
+  PredictionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: jdasense-predictions
+      AttributeDefinitions:
+      - AttributeName: record_id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: record_id
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: jdasense-users
+      AttributeDefinitions:
+      - AttributeName: email
+        AttributeType: S
+      KeySchema:
+      - AttributeName: email
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  AuditTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: jdasense-audit
+      AttributeDefinitions:
+      - AttributeName: log_id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: log_id
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  JdaSenseApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    Properties:
+      Enabled: true
+  JdaSenseUsagePlan:
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      ApiStages:
+      - ApiId:
+          Ref: ServerlessRestApi
+        Stage: Prod
+      UsagePlanName: JdaSenseUsagePlan
+  JdaSenseUsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+      KeyId:
+        Ref: JdaSenseApiKey
+      KeyType: API_KEY
+      UsagePlanId:
+        Ref: JdaSenseUsagePlan
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint URL for JdaSense
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
+  ApiKey:
+    Description: API Key for the mobile app
+    Value:
+      Ref: JdaSenseApiKey

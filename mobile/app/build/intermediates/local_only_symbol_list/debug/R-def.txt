@@ -22,6 +22,7 @@ id et_password
 id et_pin
 id fab_add_user
 id iv_lock
+id lottieAnalyzing
 id lottie_analyzing
 id onboarding_description
 id onboarding_instruction

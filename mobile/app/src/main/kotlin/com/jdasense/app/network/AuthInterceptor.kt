@@ -3,13 +3,14 @@ package com.jdasense.app.network
 import com.jdasense.app.security.TokenManager
 import okhttp3.Interceptor
 import okhttp3.Response
+import android.util.Log
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AuthInterceptor @Inject constructor(private val tokenManager: TokenManager) : Interceptor {
-    
-    private val API_KEY = "5rIq9flqZW6lEbwlVv72L9VtDqYvyiDW7qqn0FMv" // Replace with key from sam deploy output
+
+    private val API_KEY = "HxuBPWNWqxaZO6MPmwGYB93UnIqhk0W34DWlJcWY"
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
@@ -22,6 +23,12 @@ class AuthInterceptor @Inject constructor(private val tokenManager: TokenManager
             requestBuilder.header("Authorization", "Bearer $token")
         }
 
-        return chain.proceed(requestBuilder.build())
+        val request = requestBuilder.build()
+        Log.d("AuthInterceptor", "Sending request to ${request.url}")
+
+        val response = chain.proceed(request)
+        Log.d("AuthInterceptor", "Received response with code ${response.code} from ${request.url}")
+
+        return response
     }
 }
