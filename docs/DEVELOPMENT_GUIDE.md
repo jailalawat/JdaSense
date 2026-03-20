@@ -97,6 +97,7 @@ RESET_PROCESSED_BEFORE_TRAIN=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/auto
 ```
 State model:
 * `ai/training_lock.json` is the canonical lock artifact (portable across fresh clones).
+* `ai/trained_data_manifest.json` is the canonical trained-input registry. Files already listed here are skipped in future retraining runs.
 * `ai/data/sync_state.json` and `ai/preprocess_state.json` are local cache/runtime state.
 
 ### Weekly Update Plan (AI + AWS)

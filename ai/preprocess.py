@@ -1,7 +1,6 @@
 import argparse
 import hashlib
 import json
-import os
 from pathlib import Path
 
 import librosa
@@ -20,6 +19,7 @@ FMAX = 600
 RAW_DIR_DEFAULT = Path("ai/data/raw")
 PROCESSED_DIR_DEFAULT = Path("ai/data/processed")
 PREPROCESS_STATE_PATH = Path("ai/preprocess_state.json")
+TRAINED_MANIFEST_PATH = Path("ai/trained_data_manifest.json")
 
 
 def butter_bandpass(lowcut, highcut, fs, order=5):
@@ -68,6 +68,31 @@ def _raw_wav_fingerprint(wav_files):
     return hasher.hexdigest()
 
 
+def load_trained_manifest(manifest_path: Path):
+    if not manifest_path.exists():
+        return {}
+    try:
+        payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return payload.get("sources", {})
+
+
+def is_manifest_trained(file_path: Path, raw_dir: Path, trained_sources: dict) -> bool:
+    try:
+        rel = file_path.relative_to(raw_dir)
+    except ValueError:
+        return False
+
+    parts = rel.parts
+    if not parts:
+        return False
+    source_name = parts[0]
+    source_rel = "/".join(parts[1:])
+    trained_entries = trained_sources.get(source_name, [])
+    return source_rel in trained_entries
+
+
 def process_file(file_path: Path, output_dir: Path, force: bool = False):
     try:
         y, _ = librosa.load(str(file_path), sr=SAMPLE_RATE)
@@ -109,6 +134,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Preprocess raw heart sounds into mel spectrogram segments")
     parser.add_argument("--raw-dir", default=str(RAW_DIR_DEFAULT))
     parser.add_argument("--processed-dir", default=str(PROCESSED_DIR_DEFAULT))
+    parser.add_argument("--trained-manifest", default=str(TRAINED_MANIFEST_PATH))
     parser.add_argument("--force", action="store_true", help="Recreate spectrograms even if expected outputs exist")
     parser.add_argument(
         "--since-epoch",
@@ -123,12 +149,18 @@ def main():
     args = parse_args()
     raw_dir = Path(args.raw_dir)
     processed_dir = Path(args.processed_dir)
+    trained_manifest = Path(args.trained_manifest)
     processed_dir.mkdir(parents=True, exist_ok=True)
 
     wav_files = sorted(raw_dir.rglob("*.wav"))
     if args.since_epoch is not None:
         wav_files = [p for p in wav_files if int(p.stat().st_mtime) >= int(args.since_epoch)]
         print(f"Filtering raw files since epoch {args.since_epoch}.")
+    trained_sources = load_trained_manifest(trained_manifest)
+    if trained_sources:
+        before_count = len(wav_files)
+        wav_files = [p for p in wav_files if not is_manifest_trained(p, raw_dir, trained_sources)]
+        print(f"Excluded {before_count - len(wav_files)} already-trained raw files using {trained_manifest}.")
     print(f"Found {len(wav_files)} files to process.")
 
     raw_fingerprint = _raw_wav_fingerprint(wav_files)

@@ -10,6 +10,7 @@ QUALITY_REPORT = "ai/data_quality_report.json"
 MIN_LABEL_COVERAGE_PERCENT = 80.0
 TRAINING_STATE = Path("ai/last_training_state.json")
 TRAINING_LOCK = Path("ai/training_lock.json")
+TRAINED_MANIFEST = Path("ai/trained_data_manifest.json")
 PROCESSED_DIR = Path("ai/data/processed")
 RAW_DIR = Path("ai/data/raw")
 VERIFIED_SOURCES = Path("ai/verified_sources.json")
@@ -143,6 +144,82 @@ def cleanup_local_training_data():
         print("Local training data cleanup: nothing to clean.")
 
 
+def load_trained_manifest():
+    if not TRAINED_MANIFEST.exists():
+        return {"schema_version": 1, "sources": {}}
+    try:
+        payload = json.loads(TRAINED_MANIFEST.read_text(encoding="utf-8"))
+    except Exception:
+        return {"schema_version": 1, "sources": {}}
+    payload.setdefault("schema_version", 1)
+    payload.setdefault("sources", {})
+    return payload
+
+
+def write_trained_manifest(payload: dict):
+    TRAINED_MANIFEST.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def collect_untrained_raw_files(since_epoch=None):
+    manifest = load_trained_manifest()
+    trained_sources = manifest.get("sources", {})
+    selected = []
+
+    for wav_path in sorted(RAW_DIR.rglob("*.wav")):
+        if since_epoch is not None and int(wav_path.stat().st_mtime) < int(since_epoch):
+            continue
+        try:
+            rel = wav_path.relative_to(RAW_DIR)
+        except ValueError:
+            continue
+        parts = rel.parts
+        if not parts:
+            continue
+        source_name = parts[0]
+        source_rel = "/".join(parts[1:])
+        if source_rel in trained_sources.get(source_name, []):
+            continue
+        selected.append((wav_path, source_name, source_rel))
+    return selected
+
+
+def mark_raw_files_as_trained(selected_files):
+    if not selected_files:
+        print("No new raw files to mark as trained.")
+        return
+
+    payload = load_trained_manifest()
+    sources = payload.setdefault("sources", {})
+    for _, source_name, source_rel in selected_files:
+        source_entries = set(sources.get(source_name, []))
+        source_entries.add(source_rel)
+        sources[source_name] = sorted(source_entries)
+    payload["updated_at_epoch_seconds"] = int(time.time())
+    write_trained_manifest(payload)
+    print(f"Marked {len(selected_files)} raw files as trained in {TRAINED_MANIFEST}.")
+
+
+def delete_trained_raw_and_processed(selected_files):
+    removed_raw = 0
+    removed_processed = 0
+
+    for raw_path, _, _ in selected_files:
+        stem = raw_path.stem
+        if raw_path.exists():
+            raw_path.unlink(missing_ok=True)
+            removed_raw += 1
+
+        pattern = f"{stem}_seg*.npy"
+        for npy_path in PROCESSED_DIR.glob(pattern):
+            npy_path.unlink(missing_ok=True)
+            removed_processed += 1
+
+    print(
+        "Deleted locally trained inputs: "
+        f"{removed_raw} raw files and {removed_processed} processed segments."
+    )
+
+
 def clear_directory_contents(target: Path):
     if not target.exists():
         return
@@ -175,6 +252,8 @@ def run_retrain_pipeline():
     force_data_refresh = os.getenv("FORCE_DATA_REFRESH", "0").strip().lower() in {"1", "true", "yes"}
     train_on_new_data_only = os.getenv("TRAIN_ON_NEW_DATA_ONLY", "0").strip().lower() in {"1", "true", "yes"}
     reset_processed_before_train = os.getenv("RESET_PROCESSED_BEFORE_TRAIN", "0").strip().lower() in {"1", "true", "yes"}
+    skip_trained_inputs = os.getenv("SKIP_TRAINED_INPUTS", "1").strip().lower() in {"1", "true", "yes"}
+    delete_trained_inputs_after_success = os.getenv("DELETE_TRAINED_INPUTS_AFTER_SUCCESS", "1").strip().lower() in {"1", "true", "yes"}
 
     if force_data_refresh:
         print("--- 0. Force Data Refresh ---")
@@ -192,10 +271,21 @@ def run_retrain_pipeline():
     sync_state = load_sync_state()
     any_new_data = bool(sync_state.get("any_new_data", False))
     sync_started_epoch = sync_state.get("sync_started_at_epoch")
+    selected_since_epoch = sync_started_epoch if train_on_new_data_only else None
+    selected_raw_files = (
+        collect_untrained_raw_files(since_epoch=selected_since_epoch)
+        if skip_trained_inputs
+        else []
+    )
 
     if train_on_new_data_only and (sync_before_train and not any_new_data) and not force_retrain:
         print("--- 2. New Data Check ---")
         print("No new data since last sync; skipping preprocessing/training/export because TRAIN_ON_NEW_DATA_ONLY=1.")
+        return
+
+    if skip_trained_inputs and not selected_raw_files and not force_retrain:
+        print("--- 2. Trained Manifest Check ---")
+        print("No untrained raw files remain after manifest filtering. Skipping preprocessing/training/export.")
         return
 
     if reset_processed_before_train:
@@ -207,6 +297,8 @@ def run_retrain_pipeline():
     # 4. Preprocess data
     print("--- 4. Preprocessing ---")
     preprocess_cmd = ["python", "ai/preprocess.py"]
+    if skip_trained_inputs:
+        preprocess_cmd.extend(["--trained-manifest", str(TRAINED_MANIFEST)])
     if train_on_new_data_only and sync_started_epoch:
         preprocess_cmd.extend(["--since-epoch", str(sync_started_epoch)])
     subprocess.run(preprocess_cmd, check=True)
@@ -246,8 +338,14 @@ def run_retrain_pipeline():
     # 8. Final Verification
     if os.path.exists("ai/heart_sound_model.onnx"):
         print("✅ Pipeline Success: New model ready for deployment.")
+        if skip_trained_inputs:
+            print("--- 9. Mark Trained Inputs ---")
+            mark_raw_files_as_trained(selected_raw_files)
+            if delete_trained_inputs_after_success:
+                print("--- 10. Delete Trained Inputs ---")
+                delete_trained_raw_and_processed(selected_raw_files)
         if cleanup_after_success:
-            print("--- 9. Cleanup Local Training Data ---")
+            print("--- 11. Cleanup Local Training Data ---")
             cleanup_local_training_data()
         # In production, add a shell command here to deploy to AWS Lambda/S3
     else:

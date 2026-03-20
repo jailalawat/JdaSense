@@ -1,5 +1,6 @@
 # JdaSense: AI-Powered Heart Sound Diagnostic System
-
+gemini --resume 63ce3442-b0ee-4a61-977a-63ae1f422724
+codex resume 019d041b-ec49-7792-9de9-a3d7ef0daabf
 **JdaSense** is a high-fidelity heart sound diagnostic system that allows users to capture uncompressed heart sounds using their Android smartphone, transmit the data to a serverless AI backend, and receive real-time analysis for potential heart abnormalities (e.g., murmurs).
 
 ---
@@ -116,6 +117,8 @@ RESET_PROCESSED_BEFORE_TRAIN=1 CV_FOLDS=5 TARGET_SENSITIVITY=0.90 python ai/auto
 * `ai/training_lock.json`:
   Canonical pipeline lock (portable). Tracks trained data fingerprint, settings, and artifact hashes.
   This file can be committed as the source-of-truth snapshot for fresh clones/environments.
+* `ai/trained_data_manifest.json`:
+  Canonical trained-input manifest. Raw files listed here are treated as already consumed by the current model and will be skipped on future runs.
 * `ai/data/sync_state.json` and `ai/preprocess_state.json`:
   Local runtime cache/state for speed only (ignored by git).
 
